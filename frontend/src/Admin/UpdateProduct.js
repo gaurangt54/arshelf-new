@@ -6,14 +6,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import apiCall from '../Utils/apiCall'; 
 
-import {storage} from '../firebase'
+function UpdateProduct(props) {
 
-function AddProduct() {
-
+    const id = props.match.params.id;
     const [categories, setCategories] = useState([]);
     const [product, setProduct] = useState({});
 
     useEffect(()=>{
+
+        apiCall(`getProductById`, 'GET', id)
+        .then(res=>{
+            setProduct(res.data.data)
+        }).catch(err => {
+            console.log(err);
+            alert("Something went wrong, please try again!");
+        });
 
         apiCall(`getCategories`, 'GET', null)
         .then(res=>{
@@ -26,19 +33,20 @@ function AddProduct() {
               });
             };
             setCategories(categories);
-          }).catch(err => {
-            console.log(err);
-            alert("Something went wrong, please try again!");
-          });
+        }).catch(err => {
+        console.log(err);
+        alert("Something went wrong, please try again!");
+        });
 
     }, [])
 
     const submit = async (e) => {  
         e.preventDefault();       
         console.log(product)
-        apiCall(`addProduct`, 'POST', null, product)
+        apiCall(`updateProduct`, 'PUT', null, product)
         .then(res=>{
             alert(res.data.message);
+            props.history.push('/admin/manageProduct')
         })
         .catch(err=>{
             alert(err.data.message);
@@ -52,28 +60,26 @@ function AddProduct() {
                 <Row>
                     <Col md={12} className="p-3">
                         <div>
-                            <div className="heading formheading">
-                                <h3><FontAwesomeIcon id="formicon" icon={faPlusCircle} style={{fontSize:"30px",marginRight:"10px"}} />Add Product</h3>
-                            </div>
+                        <div className="text-center p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Update Product</div>
                             <div className="mainpanel-form">
                                 <Form>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label className="formlabel">Product Name :</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setProduct({...product, name: event.target.value}) }} placeholder="Product Name" required/>
+                                        <Form.Control type="text" onChange={(event)=>{ setProduct({...product, name: event.target.value}) }} placeholder="Product Name" value={product.name} required/>
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label className="formlabel">Product Description:</Form.Label>
-                                        <Form.Control type="text"as="textarea" className="form-textarea" rows={3} style={{resize:'none'}} onChange={(event)=>{ setProduct({...product, description: event.target.value}) }} placeholder="This is the description of the product" required/>
+                                        <Form.Control type="text"as="textarea" className="form-textarea" value={product.description} rows={4} style={{resize:'none'}} onChange={(event)=>{ setProduct({...product, description: event.target.value}) }} placeholder="This is the description of the product" required/>
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                                        <Form.Label className="formlabel">Product Dimension (in inches)</Form.Label><br/>
-                                        <input type="text" className="form-file p-1 mr-3" onChange={(event)=>{ setProduct({...product, length: event.target.value}) }} placeholder="Length" />
-                                        <input type="text" className="form-file p-1 mr-3" onChange={(event)=>{ setProduct({...product, breadth: event.target.value}) }} placeholder="Breadth" />
-                                        <input type="text" className="form-file p-1 mr-3" onChange={(event)=>{ setProduct({...product, height: event.target.value}) }} placeholder="Height" />
+                                        <Form.Label className="formlabel">Product Dimension (length x width x height in inches)</Form.Label><br/>
+                                        <input type="text" className="form-file p-1 mr-3" value={product.length} onChange={(event)=>{ setProduct({...product, length: event.target.value}) }} placeholder="Length" />
+                                        <input type="text" className="form-file p-1 mr-3" value={product.breadth} onChange={(event)=>{ setProduct({...product, breadth: event.target.value}) }} placeholder="Breadth" />
+                                        <input type="text" className="form-file p-1 mr-3" value={product.height} onChange={(event)=>{ setProduct({...product, height: event.target.value}) }} placeholder="Height" />
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label className="formlabel">Product 3D/AR File:</Form.Label>
-                                        <Form.Control type="text" className="form-file" onChange={(event)=>{ setProduct({...product, arFile: event.target.value}) }} placeholder="Link of 3D/AR File" />
+                                        <Form.Control type="text" className="form-file" value={product.arFile} onChange={(event)=>{ setProduct({...product, arFile: event.target.value}) }} placeholder="Link of 3D/AR File" />
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
                                         <Form.Label className="formlabel">Category:</Form.Label>
@@ -81,21 +87,21 @@ function AddProduct() {
                                         <select onChange={(event)=>{ setProduct({...product, category_id: event.target.value}) }} required>
                                             <option value="0">-&nbsp;- &nbsp;Select&nbsp; -&nbsp;-</option>
                                             {categories.map((category,index) => (
-                                                <option value={category.id}>{category.name}</option>
+                                                <option value={category.id} className={product.category_id===category.id?"bg-primary":null}>{category.name}</option>
                                                 ))}
                                         </select>
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
                                         <Form.Label className="formlabel">Price:</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setProduct({...product, price: event.target.value}) }} placeholder="00" required/>
+                                        <Form.Control type="text" value={product.price} onChange={(event)=>{ setProduct({...product, price: event.target.value}) }} placeholder="00" required/>
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput5">
                                         <Form.Label className="formlabel">Quantity:</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setProduct({...product, quantity: event.target.value}) }} placeholder="0" required/>
+                                        <Form.Control type="text" value={product.quantity} onChange={(event)=>{ setProduct({...product, quantity: event.target.value}) }} placeholder="0" required/>
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput6">
                                         <Form.Label className="formlabel">EOQ:</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setProduct({...product, eoq: event.target.value}) }} placeholder="0" required/>
+                                        <Form.Control type="text" value={product.eoq} onChange={(event)=>{ setProduct({...product, eoq: event.target.value}) }} placeholder="0" required/>
                                     </Form.Group>
                                     <Form.Group controlId="formLoginButton">
                                         <Button variant="primary" type="submit" className="btn-submit btn-block"  onClick={(e)=>{submit(e)}}>Submit</Button>
@@ -110,4 +116,4 @@ function AddProduct() {
     )
 }
 
-export default AddProduct
+export default UpdateProduct

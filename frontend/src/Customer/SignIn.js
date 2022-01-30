@@ -1,5 +1,6 @@
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "./Context";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Container, Row, Col, Form, Button} from "react-bootstrap";
@@ -7,6 +8,7 @@ import loginImg from "./images/login.jpg";
 import apiCall from '../Utils/apiCall'; 
 
 function SignIn(props) {
+    const [user, saveUser] = useContext(Context);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
@@ -26,6 +28,8 @@ function SignIn(props) {
                 if (res.data.success) {
                     alert(res.data.message);
                     if(res.data.role == 'user'){
+                        localStorage.setItem('user', JSON.stringify(res.data.user));
+                        saveUser(res.data.user)
                         props.history.push("/");
                     }
                     else if(res.data.role == 'admin'){
@@ -40,6 +44,12 @@ function SignIn(props) {
                 alert("Something went wrong, please try again!");
             });
     };
+
+    useEffect(()=>{
+        const user = JSON.parse(localStorage.getItem('user'))
+        if(user)
+            props.history.push('/')
+    }, [])
 
     return (
         <>

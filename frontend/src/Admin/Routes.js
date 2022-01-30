@@ -10,6 +10,9 @@ import Orderlist from "./Orderlist";
 
 import AddCategory from "./AddCategory";
 import ManageCategory from "./ManageCategory";
+import Home from "./Home";
+import UpdateProduct from "./UpdateProduct";
+import ManageProduct from "./ManageProduct";
 
 function Routes() {
 
@@ -36,10 +39,14 @@ function Routes() {
     return (
         <BrowserRouter>
         <Header token={token} setToken={setToken}/>
+
+            <Route exact path="/admin/" component={Home} ></Route>
             <Route exact path="/admin/addCategory" component={AddCategory} ></Route>
             <Route exact path="/admin/manageCategory" component={ManageCategory} ></Route>
 
             <Route exact path="/admin/addProduct" component={AddProduct} ></Route>
+            <Route exact path="/admin/manageProduct" component={ManageProduct} ></Route>
+            <Route exact path="/admin/updateProduct/:id" component={UpdateProduct} ></Route>
             <Route exact path="/admin/orderlist" component={Orderlist} ></Route>
         </BrowserRouter>
     );

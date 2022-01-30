@@ -34,6 +34,16 @@ const userSchema = new Schema(
             default: "user",
             enum: ["user", "admin"],
         },
+
+        cart:{
+            type: Array,
+            default: []
+        },
+
+        wishlist:{
+            type: Array,
+            default: []
+        }
     },
     {
         toJSON: { virtuals: true },
@@ -48,5 +58,6 @@ userSchema.pre("save", async function (next) {
     }
     next();
 });
+
 
 module.exports = mongoose.model("user", userSchema);

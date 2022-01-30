@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-//const backendUrl1 = "http://localhost:2000"
+const backendUrl1 = "http://localhost:2000";
 const backendUrl = "https://api-arshelf.herokuapp.com";
 
 const apiCall = (path, method, params, body) => {

@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 body{
-    font-family: Roboto, 'san-serif';
+    font-family: Poppins, 'san-serif';
     overflow-x: hidden;
 
 }
@@ -12,15 +12,51 @@ a{
     text-decoration: none;
 }
 
-/**** HEADINGS ****/
-.heading{
-    font-size: 60px;
-    color: #007BFF;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 40px 0 30px!important;
+.counter{
+    margin: 1rem;
+    padding: 0.8rem;
+    background-color: #ddd;
+    box-shadow: -1px 6px 18px  rgba(170,170,170,0.5);
 }
 
+.counter:hover{
+    margin: 0.8rem;
+    padding: 1rem;
+    background-color: #ccc;
+    box-shadow: -1px 6px 18px  rgba(170,170,170,0.5);
+}
+
+.counter-title{
+    font-size: 22px;
+    font-weight: 700;
+    padding: 4px;
+}
+
+.counter-count{
+    font-size: 64px;
+    font-weight: 700;
+    padding: 2px;
+}
+
+p#dropdownMenuButton.dropdown-toggle.hidden{
+    margin:-1.7rem 0 0 0;
+    cursor: pointer;
+}
+
+div.dropdown{
+    padding: 0;
+    cursor: pointer;
+}
+
+.status-box{
+    position: relative;
+}
+
+.close-order{
+    position: absolute;
+    top: 05px;
+    right: 10px;
+}
 
 /**** BUTTONS ****/
 .btn-login{
@@ -74,14 +110,13 @@ a{
     position: absolute;
     right: 40px;
     border: 1px solid #007BFF;
-    color: #007BFF;
+    color: #efefef;
     font-weight: 400;
     padding: 5px 20px;
     border-radius: 5px;
-    letter-spacing: 1px;
-    background-color: #EFEFEF!important;
+    background-color: #007BFF!important;
     transition: .3s all ease-in-out;
-    margin: 0px;
+    margin: auto;
   
 }
 .btn-logout:hover{
@@ -147,77 +182,7 @@ a{
     border: 2px solid #f71138;
 }
 
-/**** NAVBAR ****/
 
-/*
-.navbar{
-    background: #007bff;
-    color: #fff;
-    position: sticky;
-    top: 0;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar .navbar-links{
-    display: flex;
-    list-style: none;
-    align-items: center;
-}
-
-.navbar .navbar-links li a{
-    color: #fff;
-    margin: 0 .25rem;
-    padding: .75rem;
-    border-radius: 5px;
-}
-
-.navbar-links li{
-    font-size: 18px;
-}
-*/
-/*
-.left-panel{
-    background: rgb(211,211,211);
-    color: #007bff;
-    position: fixed;
-    top: 58px;
-    left: 0px;
-    width: 300px;
-    height: 100%;
-    align-items: center;
-}
-
-.left-panel h2{
-    padding-top: 100px;
-    padding-bottom: 50px;
-    padding-left: 50px;
-}
-
-.left-panel ul li{
-    padding-top: 20px;
-    padding-left: 50px;
-}
-
-.left-panel .panel-links a{
-    color: #007bff;
-    font-size: 20px;
-}
-
-.left-panel .category li{
-    padding-left: 80px;
-}
-
-.main-panel{
-   padding-left: 400px;
-    padding-top: 50px;
-    padding-right: 90px;
-    color: #007bff;
-    font-size: 20px;
-}
-*/
 .main-panel .sub-btn{
     background: #007bff;
     background: linear-gradient(rgb(16, 76, 241), rgb(62, 192, 231));
@@ -237,24 +202,20 @@ a{
     background: linear-gradient(to top, rgb(62, 192, 231), rgb(128, 140, 173));
 }
 
-.table{
-    padding-left: 400px;
-    padding-top: 50px;
-    padding-right: 90px;
+table, th, td{
+    padding: 0.5rem;
+    text-align: center;
 }
 
-table, th, td{
-    padding: 10px;
-    border: 2px solid #007bff;
-    border-collapse: collapse;
-    padding: 10px;
-    padding-left: 100px;
-    padding-right: 100px;
+.admin-tables{
+    border-radius: 10px;
+    box-shadow: -1px 6px 18px  rgba(170,170,170,0.5);
 }
 
 .table i:hover{
     cursor: pointer;
 }
+
 
 button{
     margin: 5px;
@@ -329,12 +290,6 @@ container{
     color: #424242;
 }
 
-
-select{
-    font-size: 18px;
-    padding: 5px 40px;
-    color: #424242;
-}
 /**** Add Product ****/
 /* Progress-Loader */
 .overlay{

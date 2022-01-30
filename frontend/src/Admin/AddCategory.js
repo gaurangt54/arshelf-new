@@ -30,7 +30,7 @@ function AddCategory(props) {
                 <Row>
                     <Col md={12} className="p-3">
                         <div>
-                            <div className="heading formheading">
+                            <div className="heading formheading my-4">
                                 <h3><FontAwesomeIcon id="formicon" icon={faPlusCircle} style={{fontSize:"30px",marginRight:"10px"}} />Add Category</h3>
                             </div>
                             <div className="mainpanel-form">
@@ -39,9 +39,14 @@ function AddCategory(props) {
                                         <Form.Label className="formlabel">Category Name :</Form.Label>
                                         <Form.Control type="text" onChange={(event)=>{ setCategory({name: event.target.value}) }} placeholder="Category Name" />
                                     </Form.Group>
+                                    <br />
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label className="formlabel">Category Image :</Form.Label>
+                                        <Form.Control type="text" onChange={(event)=>{ setCategory({image: event.target.value}) }} placeholder="Category Image" />
+                                    </Form.Group>
                                     
                                     <Form.Group controlId="formLoginButton">
-                                        <Button variant="primary" type="submit" className="btn-submit" onClick={(e)=>{submit(e)}}>Submit</Button>
+                                        <Button variant="primary" type="submit" className="btn-submit btn-block" onClick={(e)=>{submit(e)}}>Submit</Button>
                                     </Form.Group>
                                 </Form>
                             </div>

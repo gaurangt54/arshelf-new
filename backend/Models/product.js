@@ -15,16 +15,20 @@ const productSchema = new Schema(
             type: String,
             required: true	
         },
-        dimension:{
-            type: String,
+        length:{
+            type: Number,
+            required: true
+        },
+        breadth:{
+            type: Number,
+            required: true
+        },
+        height:{
+            type: Number,
             required: true
         },
         quantity:{
             type: Number,
-            required: true	
-        },
-        dealer:{
-            type: String,
             required: true	
         },
         price:{

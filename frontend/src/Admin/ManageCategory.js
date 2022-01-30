@@ -64,20 +64,16 @@ function ManageCategory(props) {
 
     return (
         <div>
-            <Container>
-            <Row>
-              <Col md={12}>
-                  
-                <div>
-                    <div className="heading formheading">
-                        <h3><FontAwesomeIcon id="formicon" icon={faTasks} style={{fontSize:"30px", marginRight:"10px"}} />Manage Category</h3>
-                    </div>
+            <Container fluid style={{backgroundColor:"#fafafa", padding:"1rem 4rem 3rem 4rem", minHeight:"88vh"}}>
+              <div className="text-center">
+                <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Categories</div>
+
                     {updateCategory?
                         <div className="mb-3 p-3" style={{backgroundColor:"#cfdee3", textAlign:"center"}}>
                             <form className="form-inline">
                                 Do you want to update Category Name of {updateCategory.name} ? 
                                 <input className="form-control mx-3" type="text" placeholder="New Category Name" onChange={(e)=>{setCategoryName(e.target.value)}} />
-                                <Button className="bg-success" type="button" onClick={update}>Update</Button>
+                                <Button className="bg-primary" type="button" onClick={update}>Update</Button>
                                 <Button className="bg-danger" type="button" onClick={()=>{setUpdateCategory()}}>Cancel</Button> 
                             </form>
                         
@@ -89,24 +85,24 @@ function ManageCategory(props) {
                                 <Button className="bg-danger" type="button" onClick={()=>{setDeleteCategory()}}>Cancel</Button> 
                     </div>:null}
                     <div className="mainpanel-table">
-                      <Table striped bordered hover responsive>
-                        <thead>
+                      <Table hover responsive className="admin-tables">
+                        <thead style={{backgroundColor:"#eee"}}>
                           <tr>
-                            <th>Sr. No</th>
-                            <th>Category Name</th>
-                            <th>Actions</th>
+                            <th className="p-3">Sr. No</th>
+                            <th className="p-3">Category Name</th>
+                            <th className="p-3">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
                            {
                            categories
                            ? categories.length!= 0 ? categories.map((category,index) => (
-                            <tr key={index}>
-                              <td>{index+1}</td>
-                              <td>{category.name}</td>
-                              <td> 
-                                <Button type="button"><FontAwesomeIcon icon={faEdit} onClick={()=>{setUpdateCategory(category)}} style={{fontSize:"18px"}} /></Button>
-                                <Button className="btn-delete" type="button" onClick={()=>{setDeleteCategory(category)}}><FontAwesomeIcon icon={faTrash} style={{fontSize:"18px"}} /></Button>  
+                            <tr key={index} style={index%2==0?{backgroundColor:"#ddd"}:{backgroundColor:"#eee"}}>
+                              <td className="p-3">{index+1}</td>
+                              <td className="p-3">{category.name}</td>
+                              <td className="p-3"> 
+                                <FontAwesomeIcon className="mx-3" icon={faEdit} onClick={()=>{setUpdateCategory(category)}} style={{fontSize:"18px"}} />
+                                <FontAwesomeIcon className="mx-3" icon={faTrash} onClick={()=>{setDeleteCategory(category)}} style={{fontSize:"18px"}} /> 
                               </td>
                             </tr>
                            ))
@@ -116,8 +112,6 @@ function ManageCategory(props) {
                       </Table>
                     </div>
                 </div>
-              </Col>
-            </Row>
           </Container>
         </div>
     )

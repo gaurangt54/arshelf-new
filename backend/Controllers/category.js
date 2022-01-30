@@ -3,7 +3,8 @@ const Category =  require("../Models/category");
 exports.addCategory = (req, res) => {
 
     const newCategory = new Category({
-        name: req.body.name
+        name: req.body.name,
+        image: req.body.image
     });
 
     newCategory.save()

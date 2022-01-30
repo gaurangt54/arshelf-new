@@ -14,27 +14,27 @@ function Header(props) {
 
     return (
         <div>
-            <Navbar expand="lg" className="grey-bg">
-                <Navbar.Brand className="brand" href="">
+            <Navbar expand="lg" bg="dark" variant="dark" className="p-3">
+                <Navbar.Brand className="brand" onClick={()=>{props.history.push('/admin/')}}>
                     ARShelf
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">    
-                        <NavDropdown title="Category" id="basic-nav-dropdown">
+                        <NavDropdown className="px-1" title="Category" id="basic-nav-dropdown">
                             <NavDropdown.Item onClick={()=>{props.history.push('/admin/addCategory')}}>Add</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item onClick={()=>{props.history.push('/admin/manageCategory')}}>Manage</NavDropdown.Item>
                         </NavDropdown> 
-                        <NavDropdown title="Product" id="basic-nav-dropdown">
-                            <NavDropdown.Item className="active" onClick={()=>{props.history.push('/admin/addProduct')}}>Add</NavDropdown.Item>
+                        <NavDropdown className="px-1" title="Product" id="basic-nav-dropdown">
+                            <NavDropdown.Item onClick={()=>{props.history.push('/admin/addProduct')}}>Add</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/admin/manageproduct">Manage</NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{props.history.push('/admin/manageProduct')}}>Manage</NavDropdown.Item>
                         </NavDropdown> 
-                        <Nav.Link onClick={()=>{props.history.push('/admin/orderlist')}}>Orders</Nav.Link>
-                        <Nav.Link href="/admin/shipment">Shipment Details</Nav.Link>
+                        <Nav.Link className="px-2" onClick={()=>{props.history.push('/admin/orderlist')}}>Orders</Nav.Link>
+                        <Nav.Link className="px-3" href="/admin/approvals">Customization Approvals</Nav.Link>
                     
-                        <Button type="button" className="btn-logout" onClick={set}>Log Out</Button>
+                        <button type="button" className="btn btn-logout" onClick={set}>Log Out</button>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
