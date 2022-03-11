@@ -28,6 +28,7 @@ router.put('/updateProduct', productController.updateProduct);
 router.delete('/deleteProduct', productController.deleteProduct);
 router.get('/getProductById/:id', productController.getProductById);
 router.post('/getProducts/', productController.getProducts);
+router.post('/addReview/', productController.addReview);
 
 /* Users APIs */
 router.post('/createOrder', orderController.createOrder);

@@ -9,12 +9,12 @@ function CategoryCard(props) {
     const {category} = props
 
     return (
-        <Card className="card-card" onClick={()=>{props.history.push(`/category/${category._id}`)}}>
+        <Card className="card-card">
             <div className="contain-card-img mt-4">
                 <img src={categoryImage} />
             </div>
             <hr />
-            <Card.Body>
+            <Card.Body onClick={()=>{props.history.push(`/category/${category._id}`)}}>
                 <Card.Text className="container">
                     <strong style={{fontSize:"30px"}}>{category.name}</strong>
                 </Card.Text>

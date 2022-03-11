@@ -1,16 +1,69 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "./Context";
 import {Container, Row, Col, Card, Button} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import {withRouter} from 'react-router-dom'; 
+import apiCall from '../Utils/apiCall'; 
 
 function ProductCard(props) {
 
     const {product} = props;
+    const [user, saveUser] = useContext(Context);
+
+    const addToCart = (product, quantity) => {
+        if(user.cart.find(c=> c.name===product.name)){
+            alert("Product already exists in cart")
+        }
+        else{
+            const p = {
+                id: product._id,
+                name: product.name,
+                arFile: product.arFile,
+                category_id: product.category_id,
+                price: product.price,
+                quantity: quantity
+            }
+            let cart = user.cart;
+            cart.push(p) 
+    
+            apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+            .then(res=>{ 
+                console.log(res.data)
+                saveUser({...user, cart:cart})
+                alert("Product Added to Cart")
+            })
+            .catch(err=>{ 
+                alert("Something went wrong")
+            })
+    
+        }
+    }
+    
+    const addToWishlist = (product) => {
+        if(user.wishlist.find(c=> c.name===product.name)){
+            alert("Product already exists in wishlist")
+        }
+        else{
+            let wishlist = user.wishlist;
+            wishlist.push(product._id) 
+    
+            apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:wishlist})
+            .then(res=>{ 
+                console.log(res.data)
+                saveUser({...user, wishlist:wishlist})
+                alert("Product Added to Wishlist")
+            })
+            .catch(err=>{ 
+                alert("Something went wrong")
+            })
+        }
+        
+    }
 
     return (
-        <Card className="card-card product-card" onClick={()=>{props.history.push(`/product/${product._id}`)}}>
-            <div className='add-to-wishlist'>                        
+        <Card className="card-card product-card" >
+            <div className='add-to-wishlist' onClick={()=>{addToWishlist(product)}}>                        
                 <a href="#" className="my-3 mx-2"><FontAwesomeIcon id="wishlist-icon" icon={faHeart}/></a>
             </div>
 
@@ -19,12 +72,12 @@ function ProductCard(props) {
             </div>
             <hr />
             
-            <Card.Body>
+            <Card.Body onClick={()=>{props.history.push(`/product/${product._id}`)}}>
                 <Card.Text className="container">
                     <strong style={{fontSize:"20px"}}>{product.name}</strong>
                     <br />
                     <p className="para">From ₹ {product.price}</p>
-                    <Button className="btn-secondary" >Add to Cart</Button>
+                    <Button className="btn-secondary" onClick={()=>{addToCart(product, 1)}}>Add to Cart</Button>
                 </Card.Text>
             </Card.Body>
         </Card>

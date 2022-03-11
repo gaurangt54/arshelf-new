@@ -10,15 +10,18 @@ function Wishlist() {
     const [wishlist, setWishlist] = useState();
 
     useEffect(()=>{
-        apiCall(`getProducts`, "POST", null, {wishlist: user.wishlist})
-        .then((res) => {
-            setWishlist(res.data.total);
-            console.log(wishlist)
-        })
-        .catch((err) => {
-            console.log(err);
-            alert("Something went wrong");
-        });
+        if(user)
+        {
+            apiCall(`getProducts`, "POST", null, {wishlist: user.wishlist})
+            .then((res) => {
+                setWishlist(res.data.total);
+                console.log(wishlist)
+            })
+            .catch((err) => {
+                console.log(err);
+                alert("Something went wrong");
+            });
+        }
     }, [user])
 
     const addToCart = (product) => {
@@ -57,6 +60,26 @@ function Wishlist() {
         }
     }
 
+    const removeFromWishlist = (product) => {
+        console.log("Click")
+
+        user.wishlist.map((cartItem, index)=>{
+            if(cartItem.id===product.id){
+                user.wishlist.splice(index,1);
+            }               
+        })
+
+        apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:user.wishlist})
+            .then(res=>{ 
+                console.log(res.data)
+                saveUser({...user, wishlist:user.wishlist})
+                alert("Product Removed from Wishlist")
+            })
+            .catch(err=>{ 
+                alert("Something went wrong")
+            })
+    }
+
     return <div>
         <Container fluid className="p-5" style={{backgroundColor:"#eeeeee"}}>
             
@@ -74,6 +97,11 @@ function Wishlist() {
                     wishlist.map((product,index)=>(
                         <Col xl={3} lg={4} md={6}>
                         <Card className="card-card product-card">
+
+                        <div className='add-to-wishlist' onClick={()=>{removeFromWishlist(product)}}>                        
+                            <a href="#" className="my-3 mx-2" >x</a>
+                        </div>
+
                             <div className="contain-card-img">
                             <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                             </div>

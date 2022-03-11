@@ -45,6 +45,10 @@ const productSchema = new Schema(
         },
         arFile:{
             type:String,
+        },
+        reviews:{
+            type:Array,
+            default:[]
         }
     }
 );

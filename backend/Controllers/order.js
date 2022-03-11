@@ -60,9 +60,25 @@ exports.getOrders = (req,res) => {
     date ? payload['date'] = date : null;
     status ? payload['status'] = status : null;
 
-    Order.find(payload).sort({date:-1})
+    const sort = req.body.sort ? req.body.sort : -1;
+    const page = req.body.page ? req.body.page : 1;
+    const perPage = req.body.perPage ? req.body.perPage : 5;
+    
+    const startIndex = (page-1)*perPage;
+    const endIndex = (page*perPage);
+
+    Order.find(payload).sort({date:sort})
     .then(response=>{
-        res.status(200).json({message:"Orders Fetched Successfully", orders:response, success:true})
+
+        let pages = [];
+        for(let i = 1; i<=Math.ceil(response.length/perPage);i++){
+            pages.push(i);
+        }
+
+        page ? rest = response.slice(startIndex,endIndex): rest = response;
+
+
+        res.status(200).json({message:"Orders Fetched Successfully", orders:rest, pages:pages, page:page, total:response, success:true})
     })
     .catch(error=>{
         res.status(500).json({message:"Orders Not Fetched", error:error, success:false})

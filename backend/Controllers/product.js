@@ -26,6 +26,21 @@ const digit = (time) => {
     return (`${time}`);
 }
 
+exports.addReview = async (req,res) => {
+    const review = req.body;
+    review['date'] = setDate()[0];
+    console.log(review)
+    Product.findOneAndUpdate({_id:review.productId}, {$push:{reviews:review}})
+    .then(response=>{
+        console.log(response)
+        res.status(200).json({message:"Product Review Added Successfully", data:response, success:true})
+    })
+    .catch(error=>{
+        res.status(500).json({message:"Product Not Updated", error:error, success:false})
+    })
+
+}
+
 exports.addProduct = async (req,res) => {
     const {name, category_id, description, quantity, price, length, breadth, height, eoq, arFile } = req.body;
     console.log(req.body)
@@ -126,7 +141,6 @@ exports.getProducts = (req, res) => {
     const endIndex = (page*perPage);
 
     console.log(payload)
-
 
     Product.find(payload)
     .then(response=>{

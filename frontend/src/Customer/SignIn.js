@@ -59,7 +59,7 @@ function SignIn(props) {
                     <Row style={{ height: "85vh" , padding: "1rem" }}>
                         <Col sm={8}>
                             <div className="loginImage">
-                                <img src={loginImg} width="100%" height="600vh"alt="" />
+                                <img src={loginImg} width="100%" height="530vh"alt="" />
                             </div>
                         </Col>
 

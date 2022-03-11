@@ -83,6 +83,7 @@ exports.updateUser = (req, res) => {
     console.log(req.body);
     let payload = {}
     cart ? payload['cart'] = cart : null;
+    wishlist ? payload['wishlist'] = wishlist : null;
 
     User.findOneAndUpdate({email:email}, payload)
     .then(response=>{

@@ -80,7 +80,7 @@ function SignUp(props) {
 		            </Col>
 		            <Col md={7}>
 		              <div className="loginImage">
-		                <img src={loginImg} width="100%" height="700vh" style={{padding:"20px 0 0 20px",margin:"0 auto"}} alt=""/>
+		                <img src={loginImg} width="100%" height="520vh" style={{padding:"20px 0 0 20px",margin:"0 auto"}} alt=""/>
 		              </div>
 		            </Col>
 		          </Row>

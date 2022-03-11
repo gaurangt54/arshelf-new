@@ -55,7 +55,11 @@ function Header(props) {
                     </Nav>
                     <Nav className="ml-auto">
                         <a onClick={()=>{props.history.push('/wishlist')}} className="navbar-icon my-3 mx-2"><FontAwesomeIcon id="wishlist-icon" icon={faHeart}/></a>
-                        <a onClick={()=>{props.history.push('/cart')}} className="navbar-icon my-3 mx-2"><FontAwesomeIcon id="cart-icon" icon={faCartArrowDown}/></a>
+                        <div className='cart-box my-3 mx-2'>
+                            <a onClick={()=>{props.history.push('/cart')}} className="navbar-icon"><FontAwesomeIcon id="cart-icon" icon={faCartArrowDown}/></a>
+                            {user?<span>{user.cart.length}</span>:null} 
+                        </div>
+                        
                         {!user?
                         <Button type="button" className=" mx-2" onClick={()=>{props.history.push('/login')}}>Log In</Button>
                         :

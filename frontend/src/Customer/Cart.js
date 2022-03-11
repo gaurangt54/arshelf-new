@@ -91,6 +91,8 @@ function Cart(props) {
                     user.cart.map((product,index)=>(
                         <Col xl={3} lg={4} md={6}>
                         <Card className="card-card product-card">
+
+                            
                             <div className="contain-card-img">
                             <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                             </div>
