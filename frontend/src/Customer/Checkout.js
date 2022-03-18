@@ -13,6 +13,7 @@ function Checkout(props) {
     const [payment, setPayment] = useState(0)
     const [loading, setLoading] = useState(false)
 
+    // User Cart Total Cost & Quantity is calculated
     useEffect(()=>{
         let t = 0
         let q = 0
@@ -26,6 +27,7 @@ function Checkout(props) {
         }
     }, [user])
 
+    // Creates an Order
     const submit = (e) => {
 
         if(!deliveryAddress){
@@ -40,6 +42,7 @@ function Checkout(props) {
                 payment: payment
             }
 
+            // API Call to Create Order
             apiCall(`createOrder`, 'POST', null, order)
                 .then(res=>{ 
                     console.log(res.data)

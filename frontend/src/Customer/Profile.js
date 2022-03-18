@@ -18,7 +18,6 @@ function Profile() {
         else{
             apiCall(`changePassword`, 'POST', null, {email: user.email, oldPassword:oldPassword, newPassword:newPassword})
             .then(res=>{ 
-                console.log(res.data)
                 alert(res.data.message)
             })
             .catch(err=>{ 

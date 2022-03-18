@@ -29,7 +29,6 @@ function ProductCard(props) {
     
             apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
             .then(res=>{ 
-                console.log(res.data)
                 saveUser({...user, cart:cart})
                 alert("Product Added to Cart")
             })
@@ -50,7 +49,6 @@ function ProductCard(props) {
     
             apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:wishlist})
             .then(res=>{ 
-                console.log(res.data)
                 saveUser({...user, wishlist:wishlist})
                 alert("Product Added to Wishlist")
             })

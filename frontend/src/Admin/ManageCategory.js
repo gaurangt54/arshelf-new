@@ -37,8 +37,6 @@ function ManageCategory(props) {
 
     const update = () => {
         const newCategory = {id: updateCategory.id, name: categoryName}
-        console.log(updateCategory)
-        console.log(newCategory)
         apiCall(`updateCategory`, 'PUT', null, newCategory)
         .then(res=>{
             alert(res.data.message);

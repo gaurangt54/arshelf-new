@@ -13,15 +13,12 @@ function Login({ setToken }) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log("previous username:" + email);
         var emailId = email;
         var pass = password;
-        console.log("User: " + emailId + " & pass: " + pass);
         let request = {
             email: email,
             password: pass,
         };
-        console.log(request);
 
 
         apiCall(`login`, 'POST', null, request)

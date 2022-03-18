@@ -5,7 +5,7 @@ import apiCall from '../Utils/apiCall';
 
 import './style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {Container, Row, Col, Table} from 'react-bootstrap';
+import {Container, Row, Col, Table, Button} from 'react-bootstrap';
 
 function Orders() {
 
@@ -15,7 +15,7 @@ function Orders() {
     const [pages, setPages] = useState();
     const [page, setPage] = useState();
     const [total, setTotal] = useState();
-
+    const [order, setOrder] = useState();
 
     const setDate = (date1) => {
         var date;
@@ -40,7 +40,6 @@ function Orders() {
             apiCall(`getOrders`, "POST", null, {userEmail: user.email})
             .then((res) => {
                 setPayload({...payload, userEmail: user.email})
-                console.log(res.data.orders)
                 getOrders(res.data.orders);
                 setPages(res.data.pages)
                 setPage(res.data.page)
@@ -61,7 +60,6 @@ function Orders() {
 
         apiCall(`getOrders`, "POST", null, payload)
         .then((res) => {
-            console.log(res.data.orders)
             getOrders(res.data.orders);
             setPages(res.data.pages)
             setPage(res.data.page)
@@ -73,11 +71,33 @@ function Orders() {
         });
     }
 
+    // Change Order Status
+    const setOrderStatus = (status) => {
+        setOrder({...order, status: status})
+
+        // Update Order
+        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
+        .then(res=>{
+            alert(res.data.message);
+            setOrder()
+            window.location.reload()
+        })
+        .catch(err=>{
+            alert("Something went wrong");
+        })
+    }
+
     return (
         <div>
             <Container fluid style={{backgroundColor:"#fafafa", padding:"1rem 4rem 3rem 4rem", minHeight:"88vh"}}>
                 <div className="text-center" >
                     <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Orders</div>
+                    {order?
+                        <div className="mb-3 p-3" style={{backgroundColor:"#ffcfcf", textAlign:"center"}}>
+                                Do you want to cancel Order <u>{order.product.name}</u> ? 
+                                <button className="btn btn-danger" type="button" onClick={()=>{setOrderStatus("Cancelled")}}>Yes</button> 
+                                <button className="btn btn-primary" type="button" onClick={()=>{setOrder()}}>No</button>
+                    </div>:null}
                     {orders && orders.length!=0 ?
                     <Table striped hover responsive className="admin-tables">
                         <thead style={{backgroundColor:"#eee"}}>
@@ -114,8 +134,12 @@ function Orders() {
                                     <td className="p-3">&#8377; {order.product.price * order.quantity}</td>
                                     <td className='p-3'>{order.payment}</td>
                                     <td className='p-3'>{order.status}</td>
-                                    <td className='p-3'>
-                                        <button className="btn btn-primary">Cancel</button>
+                                    <td className=''>
+                                        {order.status!=='Cancelled' ?
+                                        <button className="btn btn-danger p-n2" onClick={()=>{setOrder(order)}}>Cancel</button>:
+                                        <button className="btn btn-dark p-n2" disabled >Cancel</button>
+
+                                        }
                                     </td>
                                 </tr>
                             ))}

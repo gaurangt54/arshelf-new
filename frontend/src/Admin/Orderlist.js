@@ -33,7 +33,6 @@ function Orderlist() {
     useEffect(()=>{
         apiCall(`getOrders`, "POST", null, {status:viewStatus})
         .then((res) => {
-            console.log(res.data.orders)
             getOrders(res.data.orders);
         })
         .catch((err) => {
@@ -44,8 +43,7 @@ function Orderlist() {
 
     const setOrderStatus = (status) => {
         setOrder({...order, status: status})
-        console.log("Hora")
-        apiCall(`updateOrder`, 'PUT', null, {id:order._id, status:status})
+        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
         .then(res=>{
             alert(res.data.message);
             setOrder()

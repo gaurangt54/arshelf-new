@@ -122,7 +122,8 @@ exports.getProductById = (req, res) => {
 exports.getProducts = (req, res) => {
 
     const {category_id, name, length, height, breadth, quantity, eoq, price, lcost, hcost, wishlist} = req.body
-
+    let sorting = {1:{_id:1}, 2:{price:1}, 3:{price:-1}}
+    
     let payload = {is_deleted:0}
 
     wishlist ? payload['_id'] = {$in: wishlist} : null;
@@ -133,7 +134,9 @@ exports.getProducts = (req, res) => {
     height ? payload['height'] = {$gte:height} : null;
     lcost && hcost ? payload['price'] = {$lte:hcost, $gte:lcost} : null;
 
-    const sort = req.body.sort ? req.body.sort : 1;
+    const sort = req.body.sort ? sorting[req.body.sort] : {_id:1};
+    console.log(req.body.sort)
+
     const page = req.body.page ? req.body.page : 1;
     const perPage = req.body.perPage ? req.body.perPage : 12;
     
@@ -142,7 +145,7 @@ exports.getProducts = (req, res) => {
 
     console.log(payload)
 
-    Product.find(payload)
+    Product.find(payload).sort(sort)
     .then(response=>{
 
         let pages = [];

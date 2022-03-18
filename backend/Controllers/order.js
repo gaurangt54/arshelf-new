@@ -85,9 +85,21 @@ exports.getOrders = (req,res) => {
     })
 }
 
-exports.updateOrder = (req, res) =>{
-    const {id, status} = req.body;
-    Order.findOneAndUpdate({_id:id}, {status:status})
+exports.updateOrder = async (req, res) =>{
+    const {order, status} = req.body;
+
+    if(status === "Cancelled"){
+        await Product.findOneAndUpdate({_id:order.product.id}, {$inc:{quantity: (1 * order.product.quantity)}})
+        .then(response=>{
+            console.log(`${order.product.name} Quantity changed`)
+        })
+        .catch(error=>{
+            console.log(error)
+            res.status(500)
+        })
+    }
+
+    Order.findOneAndUpdate({_id:order._id}, {status:status})
     .then(response=>{
         console.log(response)
         res.status(200).json({message:"Order Status Updated Successfully", data:response, success:true})

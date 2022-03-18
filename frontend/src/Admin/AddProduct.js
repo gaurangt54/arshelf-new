@@ -34,8 +34,7 @@ function AddProduct() {
     }, [])
 
     const submit = async (e) => {  
-        e.preventDefault();       
-        console.log(product)
+        e.preventDefault();   
         apiCall(`addProduct`, 'POST', null, product)
         .then(res=>{
             alert(res.data.message);

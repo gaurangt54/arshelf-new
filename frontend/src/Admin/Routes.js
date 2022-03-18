@@ -27,7 +27,6 @@ function Routes() {
     const url = window.location.pathname;
 
     const saveToken = userToken => {
-        console.log(userToken)
         localStorage.setItem('token', JSON.stringify(userToken));
         setToken(userToken);
     };

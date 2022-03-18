@@ -14,6 +14,7 @@ function Category(props) {
     const [page, setPage] = useState();
     const [total, setTotal] = useState();
 
+    // Gets CategoryId from URL and makes an API call for getting details of Category
     useEffect(() => {
         apiCall(`getCategoryById`, "GET", id)
         .then((res) => {
@@ -25,6 +26,7 @@ function Category(props) {
         });
     }, []);
 
+    // Gets Products of Category ID mentioned in URL
     useEffect(()=>{
         apiCall(`getProducts`, "POST", null, payload)
         .then((res) => {
@@ -32,7 +34,6 @@ function Category(props) {
             setPages(res.data.pages)
             setPage(res.data.page)
             setTotal(res.data.total)
-            console.log(res.data)
         })
         .catch((err) => {
             console.log(err);
@@ -40,6 +41,7 @@ function Category(props) {
         });
     }, [payload])
 
+    // New Page Number is mentioned and Next Range of Products are retrieved
     const paging = (page) => {
         let p = payload;
         p['page'] = page;
@@ -62,21 +64,20 @@ function Category(props) {
         {category && products ?
         <Container fluid className="p-5" style={{backgroundColor:"#eeeeee"}}>
             <Row>
-                <Col md={3}>
-                <div className="title-container px-3" style={{fontSize:"28px", fontWeight:"bold"}} >
+                <Col md={12}>
+                <div className="title-container text-center px-3 pb-3" style={{fontSize:"30px", fontWeight:"bold"}} >
                     {category.name}
                 </div>
                 </Col>
-                <Col md={9}>
+                <Col md={12} className="text-center">
                     <input className="input-lg-text" type="text" onChange={(event)=>{setPayload({...payload, name:event.target.value})}} placeholder="Product Name" />
                     <input className="input-sm-text" type="text" onChange={(event)=>{setPayload({...payload, length:event.target.value})}} placeholder="Max Length" />
                     <input className="input-sm-text" type="text" onChange={(event)=>{setPayload({...payload, breadth:event.target.value})}} placeholder="Max Breadth" />
                     <input className="input-sm-text" type="text" onChange={(event)=>{setPayload({...payload, height:event.target.value})}} placeholder="Max Height" />
-                    <select>
-                        <option value={0}>Newly Added</option>
-                        <option value={1}>Price: Low to High</option>
-                        <option value={-1}>Price: High to Low</option>
-                        <option value={2}>Highly Rated</option>
+                    <select onChange={(event)=>{setPayload({...payload, sort:event.target.value})}}>
+                        <option value={1}>Newly Added</option>
+                        <option value={2}>Price: Low to High</option>
+                        <option value={3}>Price: High to Low</option>
                     </select>
                 </Col>
             </Row>
@@ -107,7 +108,9 @@ function Category(props) {
             </Row>
             
         </Container>
-        :null}
+        :<Container className="text-center m-50" style={{height:"61.4vh"}}>
+            Loading...    
+        </Container>}
     </div>;
 }
 

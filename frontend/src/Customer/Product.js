@@ -5,7 +5,7 @@ import {Container, Row, Col, Form, Button} from 'react-bootstrap';
 import apiCall from '../Utils/apiCall'; 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faCartPlus, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import Rating from "./Rating";
 
@@ -15,31 +15,44 @@ function Product(props) {
     const [quantity, setQuantity] = useState(1);
     const [review, addReview] = useState({});
     const [reviews, setReviews] = useState();
+    const [newReview, setNewReview] = useState(true);
     
-
     const [user, saveUser] = useContext(Context);
-    console.log(review)
 
+    // Get Product Details
     useEffect(()=>{
         const id = props.match.params.id;
         apiCall(`getProductById`, 'GET', id)
         .then(res=>{
             const p = res.data.data
             let r = 0
+
+            // Calculating Total Ratings 
+            if(p.reviews && p.reviews.length!=0){
             p.reviews.map(rv=>{
-                console.log(r)
                 r += Number(rv.rating)
-            })
-            console.log(r)
-            setReviews(r);
+            })}
+            setReviews(r); //Saving Total Reviews
             getProduct(p);
         }).catch(err => {
             alert("Something went wrong, please try again!");
+            console.log(err)
         });
         
     }, [])
 
+    // Checking whether user has already Reviewed Product
+    useEffect( ()=>{
+        
+        if(product && user && product.reviews){
+            product.reviews.map(rv=>{
+                if(user.name === rv.userName)
+                    setNewReview(false)
+            })
+        }
+    }, [product, user])
 
+    // Adding to Cart
     const addToCart = (product, quantity) => {
         if(user.cart.find(c=> c.name===product.name)){
             alert("Product already exists in cart")
@@ -58,7 +71,6 @@ function Product(props) {
     
             apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
             .then(res=>{ 
-                console.log(res.data)
                 saveUser({...user, cart:cart})
                 alert("Product Added to Cart")
             })
@@ -69,6 +81,7 @@ function Product(props) {
         }
     }
     
+    // Adding to Wishlist
     const addToWishlist = (product) => {
         if(user.wishlist.find(c=> c.name===product.name)){
             alert("Product already exists in wishlist")
@@ -79,7 +92,6 @@ function Product(props) {
     
             apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:wishlist})
             .then(res=>{ 
-                console.log(res.data)
                 saveUser({...user, wishlist:wishlist})
                 alert("Product Added to Wishlist")
             })
@@ -90,6 +102,7 @@ function Product(props) {
         
     }
 
+    // Adding new Review
     const submitReview = (e) => {
         e.preventDefault();
 
@@ -97,14 +110,12 @@ function Product(props) {
         r['productId'] = product._id;
         r['userEmail'] = user.email;
         r['userName'] = user.name;
-        console.log(r)
         if(review.rating===''){
             alert("Select Ratings");
         }
         else{
             apiCall(`addReview`, 'POST', null, r)
             .then(res=>{ 
-                console.log(res.data)
                 alert("Review Submitted")
                 window.location.reload()
             })
@@ -113,27 +124,36 @@ function Product(props) {
             })
         }
     }
+    
+    // Giving AR File and Going to Customize Site
+    const customize = (ar) => {
+        const a = ar.split("/")
+        let al = a[a.length-1]
+        window.location.href = (`https://arshelf-testing.herokuapp.com/app3/${al}`)
+    }
 
     return (
         <div>
             {product?
             <Container>
-                <Row className="m-50">
+                <Row className="mx-3">
                     <Col md={6}>
                         <div className="threeObj text-center">
                         <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} ar alt='A 3D model of a robot' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                         <p className='mt-3'>Dimension in inches: {product.length} * {product.breadth} * {product.height}. </p>
-                        <input type="color" className="choose-color" value="#fdfdfd"/>
+                        <button className="btn btn-outline-primary" onClick={()=>{customize(product.arFile)}}>Click here to Customize<FontAwesomeIcon className='ml-1' icon={faArrowRight}/></button>
+
+                        {/* <input type="color" className="choose-color" value="#fdfdfd"/>
                         <input type="color" className="choose-color" value="#ff0000"/>
                         <input type="color" className="choose-color" value="#00ff00"/>
-                        <input type="color" className="choose-color" value="#0000ff"/>
+                        <input type="color" className="choose-color" value="#0000ff"/> */}
                         </div>
                     </Col>
                     <Col md={6} className="my-auto">
                     <div>
                         <p className="prod-title">{product.name}</p>
                         <p className="prod-price">Price: <span>₹{product.price}</span></p>
-                        <Rating value={reviews/product.reviews.length} text={`${product.reviews.length} reviews`} color={'#f8e825'} />
+                        <Rating value={product.reviews ? reviews/product.reviews.length : 0} text={`${product.reviews ?product.reviews.length:0} reviews`} color={'#f8e825'} />
                         <p className="prod-stock">In Stock
                         <div class="btn-group ml-3">
                             <button type="button" class="btn btn-outline-secondary" style={{marginRight:"0px"}} disabled={quantity===1} onClick={()=>{setQuantity(quantity-1)}}>-</button>
@@ -162,9 +182,9 @@ function Product(props) {
                     </div>
                 )):<p>No Reviews</p>}
                 </Row>
-                {/* {product.reviews.find(r=>r.userName !== user.name)? */}
-                {true?
-                    <Row>   
+                
+                {newReview?
+                    <Row> 
                         <p className="prod-title">Write a Review</p>
                         <Form onSubmit={submitReview}>
                             <Form.Group controlId='rating'>
@@ -189,7 +209,9 @@ function Product(props) {
                         </Form>
                     </Row>:null}
             </Container> 
-            :<p>Loading...</p>}
+            :<Container className="text-center m-50" style={{height:"61.4vh"}}>
+                Loading...    
+            </Container>}
                                
         </div>
     )

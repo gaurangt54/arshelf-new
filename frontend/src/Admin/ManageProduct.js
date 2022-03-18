@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Button, Table} from 'react-bootstrap';
 import apiCall from '../Utils/apiCall'; 
 
-import querystring from 'query-string'
-
 function ManageProduct(props) {
 
     const [categories, setCategories] = useState();
@@ -19,9 +17,6 @@ function ManageProduct(props) {
 
     useEffect(()=>{
 
-        const qs = querystring.parse(props.location.search);
-        const {mealtype, area} = qs;
-
         apiCall(`getCategories`, 'GET', null)
         .then(res=>{
             const data = res.data;
@@ -32,7 +27,6 @@ function ManageProduct(props) {
                 categories[id] = name;
             };
             setCategories(categories);
-            console.log(categories)
         }).catch(err => {
             console.log(err);
             alert("Something went wrong, please try again!");
@@ -46,7 +40,6 @@ function ManageProduct(props) {
             setPages(res.data.pages)
             setPage(res.data.page)
             setTotal(res.data.total)
-            console.log(res.data)
         })
         .catch((err) => {
             console.log(err);

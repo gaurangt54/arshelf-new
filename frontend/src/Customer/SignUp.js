@@ -12,11 +12,9 @@ function SignUp(props) {
 
     const onSubmit = (event) => {
 		event.preventDefault()
-		console.log(user)
 		if(user.confirmPassword === user.password){
 			
 			apiCall(`signup`, 'POST', null, user).then( (res)=> {
-				console.log(res.data);
 				alert(res.data.message);
 
 				console.log("About to Redirect!");

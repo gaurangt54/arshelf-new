@@ -5,7 +5,7 @@ const backendUrl = "https://api-arshelf.herokuapp.com";
 
 const apiCall = (path, method, params, body) => {
 
-    let url = `${backendUrl1}/${path}/`;
+    let url = `${backendUrl}/${path}/`;
 
     if(params!=null)
         url += `${params}`;

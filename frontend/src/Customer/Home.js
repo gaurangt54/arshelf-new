@@ -17,6 +17,7 @@ function Home() {
     const [categories, getCategories] = useState();
     console.log(categories)
 
+    // Get Categories
     useEffect(()=>{
         apiCall(`getCategories`, 'GET', null)
         .then(res=>{

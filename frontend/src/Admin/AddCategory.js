@@ -10,7 +10,6 @@ function AddCategory(props) {
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(category);
 
         apiCall(`addCategory`, 'POST', null, category)
         .then(res=>{
