@@ -1,6 +1,7 @@
 const Order = require('../Models/order')
 const User = require('../Models/user')
 const Product = require('../Models/product')
+const Approval = require('../Models/approval')
 
 exports.createOrder = async (req,res) => {
     const {user, deliveryAddress, payment} = req.body;
@@ -13,6 +14,8 @@ exports.createOrder = async (req,res) => {
             userPhone: user.phoneNumber,
             product:product,
             quantity: product.quantity,
+            customization:product.customization ? product.customization : null,
+            approvalId: product.approvalId ? product.approvalId : null,
             deliveryAddress: deliveryAddress,
             payment: payment,
             date: new Date()
@@ -26,6 +29,18 @@ exports.createOrder = async (req,res) => {
             console.log(error)
             res.status(500)
         })
+
+        if(product.approvalId){
+            await Approval.findOneAndUpdate({_id:product.approvalId}, {status:"Ordered"})
+            .then(response=>{
+                console.log("Approval Status Changed")
+            })
+            .catch(error=>{
+                console.log(error)
+                res.status(500)
+            })
+        }
+        
 
         await Product.findOneAndUpdate({_id:product.id}, {$inc:{quantity: (-1 * product.quantity)}})
         .then(response=>{

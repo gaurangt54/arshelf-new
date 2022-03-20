@@ -13,6 +13,8 @@ import ManageCategory from "./ManageCategory";
 import Home from "./Home";
 import UpdateProduct from "./UpdateProduct";
 import ManageProduct from "./ManageProduct";
+import CustomizationRequests from "./CustomizationRequests";
+import ARView from "./ARView.js";
 
 function Routes() {
 
@@ -47,6 +49,9 @@ function Routes() {
             <Route exact path="/admin/manageProduct" component={ManageProduct} ></Route>
             <Route exact path="/admin/updateProduct/:id" component={UpdateProduct} ></Route>
             <Route exact path="/admin/orderlist" component={Orderlist} ></Route>
+            <Route exact path="/admin/approvals" component={CustomizationRequests} ></Route>
+
+            <Route exact path="/admin/arview/:id" component={ARView} ></Route>
         </BrowserRouter>
     );
 }

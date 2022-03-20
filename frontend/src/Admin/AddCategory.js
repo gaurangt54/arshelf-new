@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
@@ -18,7 +18,8 @@ function AddCategory(props) {
 
         })
         .catch(err=>{
-            alert(err.data.message);
+            console.log(err);
+            alert("Something went wrong")
         })
     }
 
@@ -36,12 +37,12 @@ function AddCategory(props) {
                                 <Form>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label className="formlabel">Category Name :</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setCategory({name: event.target.value}) }} placeholder="Category Name" />
+                                        <Form.Control type="text" onChange={(event)=>{ setCategory({...category, name: event.target.value}) }} placeholder="Category Name" />
                                     </Form.Group>
                                     <br />
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label className="formlabel">Category Image :</Form.Label>
-                                        <Form.Control type="text" onChange={(event)=>{ setCategory({image: event.target.value}) }} placeholder="Category Image" />
+                                        <Form.Control type="text" onChange={(event)=>{ setCategory({...category, image: event.target.value}) }} placeholder="Category Image Link" />
                                     </Form.Group>
                                     
                                     <Form.Group controlId="formLoginButton">

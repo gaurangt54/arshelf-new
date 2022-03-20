@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState, useEffect} from 'react'
 import { faEdit,faTrash,faTasks } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -115,7 +116,7 @@ function ManageProduct(props) {
                                 </tr>
                             ))}
                         </tbody>
-                    </Table>:<p>Loading Products</p>}
+                    </Table>:<p>Loading...</p>}
             </div>
         </Container>
 

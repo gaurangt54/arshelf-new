@@ -71,8 +71,8 @@ exports.addProduct = async (req,res) => {
 }
 
 exports.updateProduct = (req, res) => {
-    const {_id, category_id, name, length, height, breadth, quantity, eoq, price, arFile} = req.body
-
+    const {_id, category_id, name, length, height, breadth, quantity, eoq, price, arFile, reviews} = req.body
+    console.log(req.body)
     let payload = {}
 
     category_id ? payload['category_id'] = category_id : null;
@@ -83,6 +83,8 @@ exports.updateProduct = (req, res) => {
     quantity ? payload['quantity'] = quantity : null;
     eoq ? payload['eoq'] = eoq : null;
     price ? payload['price'] = price : null;
+    arFile ? payload['arFile'] = arFile : null;
+    reviews ? payload['reviews'] = reviews : null;
     
     Product.findOneAndUpdate({_id:_id}, payload)
     .then(response=>{
@@ -129,9 +131,9 @@ exports.getProducts = (req, res) => {
     wishlist ? payload['_id'] = {$in: wishlist} : null;
     category_id ? payload['category_id'] = category_id : null;
     name ? payload['name'] = regex(name) : null;
-    length ? payload['length'] = {$gte:length} : null;
-    breadth ? payload['breadth'] = {$gte:breadth} : null;
-    height ? payload['height'] = {$gte:height} : null;
+    length ? payload['length'] = {$lte:length} : null;
+    breadth ? payload['breadth'] = {$lte:breadth} : null;
+    height ? payload['height'] = {$lte:height} : null;
     lcost && hcost ? payload['price'] = {$lte:hcost, $gte:lcost} : null;
 
     const sort = req.body.sort ? sorting[req.body.sort] : {_id:1};

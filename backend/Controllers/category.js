@@ -2,6 +2,7 @@ const Category =  require("../Models/category");
 
 exports.addCategory = (req, res) => {
 
+    console.log("Aya")
     const newCategory = new Category({
         name: req.body.name,
         image: req.body.image

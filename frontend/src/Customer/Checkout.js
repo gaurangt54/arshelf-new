@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
@@ -29,36 +30,98 @@ function Checkout(props) {
 
     // Creates an Order
     const submit = (e) => {
-
-        if(!deliveryAddress){
-            alert("Enter Proper Address")
+        e.preventDefault();
+        setLoading(true)
+        const order = {
+            user:user,
+            deliveryAddress: deliveryAddress,
+            payment: payment
         }
-        else{
-            e.preventDefault();
-            setLoading(true)
-            const order = {
-                user:user,
-                deliveryAddress: deliveryAddress,
-                payment: payment
-            }
 
-            // API Call to Create Order
-            apiCall(`createOrder`, 'POST', null, order)
-                .then(res=>{ 
-                    console.log(res.data)
-                    saveUser({...user, cart:[]})
-                    setLoading(false)
-                    alert(res.data.message)
-                    props.history.push('/orders')
-                })
-                .catch(err=>{ 
-                    alert("Something went wrong")
-                })
-            }
+        // API Call to Create Order
+        apiCall(`createOrder`, 'POST', null, order)
+            .then(res=>{ 
+                console.log(res.data)
+                saveUser({...user, cart:[]})
+                setLoading(false)
+                alert(res.data.message)
+                props.history.push('/orders')
+            })
+            .catch(err=>{ 
+                alert("Something went wrong")
+            })
         
     }
 
+    const razorpay = () => {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onerror = () => {
+        alert('Razorpay SDK failed to load. Are you online?');
+        };
+        script.onload = async () =>{
+            try{
+                setLoading(true)
+                const a = (totalCost + (totalQuantity * 250)) * 100
+                const result = await apiCall(`makePayment`, 'POST', null, {amount: a})
+
+                const { amount, id: order_id, currency } = result.data;
+
+                const {
+                    data: { key: razorpayKey },
+                } = await apiCall(`getRazorpayKey`, 'GET', null)
+
+                const order = {
+                    user:user,
+                    deliveryAddress: deliveryAddress,
+                    payment: payment
+                }
+
+                const options = {
+                    key: razorpayKey,
+                    amount: amount.toString(),
+                    currency: currency,
+                    name: user.name,
+                    description: 'ARShelf Order',
+                    order_id: order_id,
+                    handler: async function (response) {
+                      await apiCall(`createOrder`, 'POST', null, order)
+                      .then(res=>{ 
+                          console.log(res.data)
+                          saveUser({...user, cart:[]})
+                          setLoading(false)
+                          alert(res.data.message)
+                          props.history.push('/orders')
+                      })
+                    },
+                    prefill: {
+                      name: user.name,
+                      email: user.email,
+                      contact: user.phoneNumber,
+                    },
+                    notes: {
+                      address: deliveryAddress,
+                    },
+                    theme: {
+                      color: '#80c0f0',
+                    },
+                };
+
+                setLoading(false);
+                const paymentObject = new window.Razorpay(options);
+                paymentObject.open();
+            }
+            catch(err){
+                console.log(err)
+                setLoading(false)
+            }
+        }
+        document.body.appendChild(script);
+    }
+
+
     return <div>
+        {user?
         <Container fluid className="p-5" style={{backgroundColor:"#fafafa"}}>
             <div className="p-2" style={{fontWeight:"bold", fontSize:"32px"}}>
                     Checkout
@@ -153,7 +216,7 @@ function Checkout(props) {
                             Online Transaction
                         </label>
                     </div>
-                    <Button className="btn-secondary btn-block my-3" onClick={submit} disabled={payment===0}>Proceed to {payment==="COD"?"Order":"Payment"}</Button>
+                    <Button className="btn-secondary btn-block my-3" onClick={payment==="Online"?razorpay:submit} disabled={payment===0 || !deliveryAddress}>Proceed to {payment==="COD"?"Order":"Payment"}</Button>
                         
                     </Row>
 
@@ -165,6 +228,7 @@ function Checkout(props) {
             </Row>
             </Form>
         </Container>
+        :null}
     </div>;
 }
 

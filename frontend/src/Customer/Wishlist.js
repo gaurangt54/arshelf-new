@@ -1,10 +1,11 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
 import {Container, Row, Col, Card, Button} from 'react-bootstrap'; 
 import apiCall from '../Utils/apiCall'; 
 
-function Wishlist() {
+function Wishlist(props) {
 
     const [user, saveUser] = useContext(Context);
     const [wishlist, setWishlist] = useState();
@@ -21,6 +22,11 @@ function Wishlist() {
                 console.log(err);
                 alert("Something went wrong");
             });
+        }
+        if(!user)
+        {
+            alert("Please Login")
+            props.history.push("/login")
         }
     }, [user])
 

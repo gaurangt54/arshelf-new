@@ -6,16 +6,16 @@ import apiCall from '../Utils/apiCall';
 import './style.css';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
 
-function Orderlist(props) {
+function CustomizationRequests(props) {
 
-    const [orders, getOrders] = useState();
+    const [approvals, getapprovals] = useState();
     const [pages, setPages] = useState();
     const [page, setPage] = useState();
     const [total, setTotal] = useState();
 
     const [viewStatus, setViewStatus] = useState();
 
-    const [order, setOrder] = useState();
+    const [approval, setapproval] = useState();
 
     const setDate = (date1) => {
         var date;
@@ -36,9 +36,9 @@ function Orderlist(props) {
     }
 
     useEffect(()=>{
-        apiCall(`getOrders`, "POST", null, {status:viewStatus})
+        apiCall(`getCustomizationRequests`, "POST", null, {status:viewStatus})
         .then((res) => {
-            getOrders(res.data.orders);
+            getapprovals(res.data.approvals);
             setPages(res.data.pages)
             setPage(res.data.page)
             setTotal(res.data.total)
@@ -54,9 +54,9 @@ function Orderlist(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getOrders`, "POST", null, payload)
+        apiCall(`getCustomizationRequests`, "POST", null, payload)
         .then((res) => {
-            getOrders(res.data.orders);
+            getapprovals(res.data.approvals);
             setPages(res.data.pages)
             setPage(res.data.page)
             setTotal(res.data.total)
@@ -67,12 +67,12 @@ function Orderlist(props) {
         });
     }
 
-    const setOrderStatus = (status) => {
-        setOrder({...order, status: status})
-        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
+    const setapprovalStatus = (status) => {
+        setapproval({...approval, status: status})
+        apiCall(`updateCustomizationRequest`, 'PUT', null, {approval:approval, status:status})
         .then(res=>{
             alert(res.data.message);
-            setOrder()
+            setapproval()
             window.location.reload()
         })
         .catch(err=>{
@@ -84,15 +84,15 @@ function Orderlist(props) {
         <div>
             <Container fluid style={{backgroundColor:"#fafafa", padding:"1rem 4rem 3rem 4rem", minHeight:"88vh"}}>
                 <div className="text-center" >
-                    <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Orders</div>
-                    {order?
+                    <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Approvals</div>
+                    {approval?
                         <div className="mb-3 p-3 text-center status-box" style={{backgroundColor:"#cfdee3", textAlign:"center"}}>
-                            <div className="close-order" onClick={()=>{setOrder()}}>x</div>
-                            Change Delivery Status of {order.userName}'s {order.product.name} to 
-                            {order.status==='Pending'?null:<button className="btn btn-warning" type="button" onClick={()=>{setOrderStatus("Pending")}} >Pending</button>}
-                            {order.status==='Dispatched'?null:<button className="btn btn-primary" type="button" onClick={()=>{setOrderStatus("Dispatched")}}>Dispatched</button>}
-                            {order.status==='Delivered'?null:<button className="btn btn-success" type="button" onClick={()=>{setOrderStatus("Delivered")}}>Delivered</button>}
-                            {order.status==='Cancelled'?null:<button className="btn btn-danger" type="button" onClick={()=>{setOrderStatus("Cancelled")}}>Cancelled</button>}
+                            <div className="close-order" onClick={()=>{setapproval()}}>x</div>
+                            Change Customization Reuqest of {approval.userName}'s {approval.product.name} to 
+                            {approval.status==='Pending'?null:<button className="btn btn-warning" type="button" onClick={()=>{setapprovalStatus("Pending")}} >Pending</button>}
+                            {approval.status==='Accepted'?null:<button className="btn btn-primary" type="button" onClick={()=>{setapprovalStatus("Accepted")}}>Accepted</button>}
+                            {approval.status==='Declined'?null:<button className="btn btn-success" type="button" onClick={()=>{setapprovalStatus("Declined")}}>Declined</button>}
+                            {approval.status==='Cancelled'?null:<button className="btn btn-danger" type="button" onClick={()=>{setapprovalStatus("Cancelled")}}>Cancelled</button>}
                             
                     </div>:null}
                     
@@ -102,10 +102,6 @@ function Orderlist(props) {
                             <th className="p-3">Date</th>
                             <th className="p-3">Customer Name</th>
                             <th className="p-3">Product</th>
-                            <th className="p-3">Quantity</th>
-                            <th className="p-3">Price</th>
-                            <th className="p-3">Total</th>
-                            <th className="p-3">Payment Method</th>
                             <th className="">
                             <div className="dropdown">
                                 <p className="dropdown-toggle hidden" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -113,34 +109,36 @@ function Orderlist(props) {
                                 </p>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                   <a className="dropdown-item" onClick={()=>{setViewStatus()}}>All</a>
-                                  <a className="dropdown-item" onClick={()=>{setViewStatus('Delivered')}}>Delivered</a>
-                                  <a className="dropdown-item" onClick={()=>{setViewStatus('Dispatched')}}>Dispatched</a>
+                                  <a className="dropdown-item" onClick={()=>{setViewStatus('Accepted')}}>Accepted</a>
+                                  <a className="dropdown-item" onClick={()=>{setViewStatus('Declined')}}>Declined</a>
                                   <a className="dropdown-item" onClick={()=>{setViewStatus('Pending')}}>Pending</a>
                                   <a className="dropdown-item" onClick={()=>{setViewStatus('Cancelled')}}>Cancelled</a>
                                 </div>
                               </div>
                             </th>
+                            <th className="p-3">Customization</th>
                         </thead>
-                        {orders && orders.length!=0 ?
+                        {approvals && approvals.length!=0 ?
                         <tbody>
-                            {orders.map((order, index)=>(
+                            {approvals.map((approval, index)=>(
                                 <tr style={index%2==0?{backgroundColor:"#ddd"}:{backgroundColor:"#eee"}} >
                                     <td className="p-3">{index+1}</td>
-                                    <td className="p-3">{setDate(order.date)[0]}</td>
-                                    <td className="p-3">{order.userName}</td>
-                                    <td className="p-3" onClick={order.approvalId?()=>{props.history.push(`/admin/arview/${order.approvalId}`)}:null}>
-                                        {order.product.name}
-                                        {order.customization?" (CST)":null}
+                                    <td className="p-3">{setDate(approval.date)[0]}</td>
+                                    <td className="p-3">{approval.userName}</td>
+                                    <td className="p-3">{approval.product.name}</td>
+                                    <td className='p-3' onClick={approval.status!="Ordered"?()=>{setapproval(approval)}:null}>{approval.status}</td>
+                                    <td className=''>
+                                        {approval.customization?
+                                        <button className="btn btn-primary p-n2" onClick={()=>{props.history.push(`arview/${approval._id}`)}}>
+                                            View
+                                        </button>
+                                        :"No Customization"
+                                        }
                                     </td>
-                                    <td className="p-3">{order.quantity}</td>
-                                    <td className="p-3">&#8377; {order.product.price}</td>
-                                    <td className="p-3">&#8377; {order.product.price * order.quantity}</td>
-                                    <td className='p-3'>{order.payment}</td>
-                                    <td className='p-3' onClick={()=>{setOrder(order)}}>{order.status}</td>
                                 </tr>
                             ))}
                         </tbody>
-                        :<>No Orders</>}
+                        :<>No approvals</>}
                     </Table>
                                 
                     <Row className="mt-5">
@@ -155,7 +153,7 @@ function Orderlist(props) {
                     </div>
 
                     <div className=" my-2 text-center text-gray-600">
-                        Showing {(page-1)*5+1} - {page===pages.length?total.length:page*5} out of {total.length} Orders
+                        Showing {(page-1)*5+1} - {page===pages.length?total.length:page*5} out of {total.length} approvals
                     </div>
                     </> : null}
                     </Row>
@@ -165,4 +163,4 @@ function Orderlist(props) {
     )
 }
 
-export default Orderlist
+export default CustomizationRequests

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
@@ -5,7 +6,7 @@ import {Container, Row, Col, Form, Button} from 'react-bootstrap';
 import apiCall from '../Utils/apiCall'; 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faCartPlus, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faCartPlus, faArrowRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import Rating from "./Rating";
 
@@ -104,32 +105,54 @@ function Product(props) {
 
     // Adding new Review
     const submitReview = (e) => {
+        
         e.preventDefault();
-
-        const r = review;
-        r['productId'] = product._id;
-        r['userEmail'] = user.email;
-        r['userName'] = user.name;
-        if(review.rating===''){
-            alert("Select Ratings");
+        if(!user){
+            alert("Please Login to add a Review")
         }
         else{
-            apiCall(`addReview`, 'POST', null, r)
-            .then(res=>{ 
-                alert("Review Submitted")
-                window.location.reload()
-            })
-            .catch(err=>{ 
-                alert("Something went wrong")
-            })
+            const r = review;
+            r['productId'] = product._id;
+            r['userEmail'] = user.email;
+            r['userName'] = user.name;
+            if(review.rating===''){
+                alert("Select Ratings");
+            }
+            else{
+                apiCall(`addReview`, 'POST', null, r)
+                .then(res=>{ 
+                    alert("Review Submitted")
+                    window.location.reload()
+                })
+                .catch(err=>{ 
+                    alert("Something went wrong")
+                })
+            }
         }
+        
+    }
+
+    //Delete Review 
+    const deleteReview = (index) => {
+        let r = product.reviews;
+        r.splice(index, 1)
+        getProduct({...product, reviews:r})
+        apiCall(`updateProduct`, 'PUT', null, {_id:product._id, reviews:r})
+        .then(res=>{
+            alert("Review Deleted");
+            window.location.reload();
+        })
+        .catch(err=>{
+            alert(err.data.message);
+        })
     }
     
     // Giving AR File and Going to Customize Site
     const customize = (ar) => {
         const a = ar.split("/")
         let al = a[a.length-1]
-        window.location.href = (`https://arshelf-testing.herokuapp.com/app3/${al}`)
+        props.history.push(`/customizer/${product._id}`)
+        // window.location.href = (`https://arshelf-testing.herokuapp.com/app3/${al}`)
     }
 
     return (
@@ -172,8 +195,13 @@ function Product(props) {
                 <Row className="m-50"> 
                 <p className="prod-title">Reviews</p>
                 {product.reviews && product.reviews.length!==0?
-                product.reviews.map((review,index)=>(
+                product.reviews.map((review, index)=>(
                     <div className="review-box">
+                        {user && review.userName===user.name?
+                        <div className='add-to-wishlist' onClick={()=>{deleteReview(index)}}>                        
+                            <a href="#" className="my-3 mx-2"><FontAwesomeIcon id="wishlist-icon" icon={faTrash}/></a>
+                        </div>
+                        :null}
                         <div style={{fontSize:"18px"}}>{review.userName}</div>
                         <div style={{fontSize:"14px", color:"#888888"}}>{review.date}</div>
                         <Rating className="mb-n1" value={review.rating}  color={'#f8e825'} />

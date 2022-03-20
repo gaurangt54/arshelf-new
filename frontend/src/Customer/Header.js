@@ -75,6 +75,7 @@ function Header(props) {
                             <NavDropdown.Item >{user.name}</NavDropdown.Item>
                             <NavDropdown.Item onClick={()=>{props.history.push('/profile')}}>My Profile</NavDropdown.Item>
                             <NavDropdown.Item onClick={()=>{props.history.push('/orders')}}>My Orders</NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{props.history.push('/approvals')}}>My Requests</NavDropdown.Item>
                             <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
                         </NavDropdown>
                         }

@@ -6,6 +6,8 @@ const userController = require('../Controllers/user')
 const categoryController = require('../Controllers/category')
 const productController = require('../Controllers/product')
 const orderController = require('../Controllers/order')
+const approvalController = require('../Controllers/approval')
+const paymentController = require('../Controllers/payment')
 
 /* Users APIs */
 router.post('/login', userController.login);
@@ -34,5 +36,15 @@ router.post('/addReview/', productController.addReview);
 router.post('/createOrder', orderController.createOrder);
 router.post('/getOrders', orderController.getOrders);
 router.put('/updateOrder', orderController.updateOrder);
+
+/*Payment APIs */
+router.get('/getRazorpayKey', paymentController.getRazorpayKey);
+router.post('/makePayment', paymentController.makePayment);
+
+/*Approval APIs */
+router.post('/addCustomizationRequest', approvalController.addCustomizationRequest);
+router.post('/getCustomizationRequests', approvalController.getCustomizationRequests);
+router.post('/getCustomizationRequest', approvalController.getCustomizationRequest);
+router.put('/updateCustomizationRequest', approvalController.updateCustomizationRequest);
 
 module.exports = router;

@@ -42,6 +42,7 @@ function UpdateProduct(props) {
 
     const submit = async (e) => {  
         e.preventDefault(); 
+        console.log(product)
         apiCall(`updateProduct`, 'PUT', null, product)
         .then(res=>{
             alert(res.data.message);

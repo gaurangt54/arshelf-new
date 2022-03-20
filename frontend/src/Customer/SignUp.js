@@ -38,7 +38,7 @@ function SignUp(props) {
         <>
 			<div>
 		        <Container fluid="lg">
-		          <Row style={{height:"80vh"}}>
+		          <Row>
 		            <Col md={5}>
 		              <div style={{padding:"20px 0 0 20px",margin:"0 auto"}}>
 		              <div className="heading" style={{textAlign:"center"}}>
@@ -78,7 +78,7 @@ function SignUp(props) {
 		            </Col>
 		            <Col md={7}>
 		              <div className="loginImage">
-		                <img src={loginImg} width="100%" height="520vh" style={{padding:"20px 0 0 20px",margin:"0 auto"}} alt=""/>
+		                <img src={loginImg} width="100%" style={{padding:"20px 0 0 20px",margin:"0 auto"}} alt=""/>
 		              </div>
 		            </Col>
 		          </Row>

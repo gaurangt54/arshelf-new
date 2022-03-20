@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 import {Container, Row, Col, Card, Button} from 'react-bootstrap';

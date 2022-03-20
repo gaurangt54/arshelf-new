@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useState, useEffect} from 'react'
 import { faEdit,faTrash,faTasks } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +10,7 @@ function ManageCategory(props) {
     const [categories, setCategories] = useState();
     const [updateCategory, setUpdateCategory] = useState();
     const [deleteCategory, setDeleteCategory] = useState();
-    const [categoryName, setCategoryName] = useState();
+    const [categoryImage, setCategoryImage] = useState();
 
     useEffect(()=>{
 
@@ -36,7 +37,7 @@ function ManageCategory(props) {
       }, [updateCategory])
 
     const update = () => {
-        const newCategory = {id: updateCategory.id, name: categoryName}
+        const newCategory = {id: updateCategory.id, image: categoryImage}
         apiCall(`updateCategory`, 'PUT', null, newCategory)
         .then(res=>{
             alert(res.data.message);
@@ -69,8 +70,8 @@ function ManageCategory(props) {
                     {updateCategory?
                         <div className="mb-3 p-3" style={{backgroundColor:"#cfdee3", textAlign:"center"}}>
                             <form className="form-inline">
-                                Do you want to update Category Name of {updateCategory.name} ? 
-                                <input className="form-control mx-3" type="text" placeholder="New Category Name" onChange={(e)=>{setCategoryName(e.target.value)}} />
+                                Do you want to update Category Image of {updateCategory.name} ? 
+                                <input className="form-control mx-3" type="text" placeholder="Image Link" onChange={(e)=>{setCategoryImage(e.target.value)}} />
                                 <Button className="bg-primary" type="button" onClick={update}>Update</Button>
                                 <Button className="bg-danger" type="button" onClick={()=>{setUpdateCategory()}}>Cancel</Button> 
                             </form>

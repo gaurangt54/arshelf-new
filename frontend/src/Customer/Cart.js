@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
@@ -20,6 +21,12 @@ function Cart(props) {
             })
             setTotal(t)
         }
+
+        if(!user)
+        {
+            alert("Please Login")
+            props.history.push("/login")
+        }
     }, [user])
 
     const removeFromCart = (product) => {
@@ -41,7 +48,6 @@ function Cart(props) {
                 alert("Something went wrong")
             })
     }
-
 
     const increaseQuantity = (product) => {
         // Increases Quantity of Item in Cart by 1
@@ -82,6 +88,7 @@ function Cart(props) {
     }
 
     return <div>
+        {user?
         <Container fluid className="p-5" style={{backgroundColor:"#eeeeee"}}>
             
             <Row>
@@ -95,7 +102,7 @@ function Cart(props) {
                 </Col>
             </Row>
             <Row>
-                {user && user.cart && user.cart.length!==0?
+                {user.cart && user.cart.length!==0?
                     user.cart.map((product,index)=>(
                         <Col xl={3} lg={4} md={6}>
                         <Card className="card-card product-card">
@@ -122,9 +129,10 @@ function Cart(props) {
                         </Card>
                         </Col>
                     ))
-                :null}
+                :<p>Empty Cart</p>}
             </Row>
         </Container>
+        :null}
     </div>;
 }
 

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const orderSchema = new Schema(
+const approvalSchema = new Schema(
     {
 
         userEmail:{
@@ -19,40 +19,21 @@ const orderSchema = new Schema(
             required: true
         },
 
-        deliveryAddress:{
-            type: String,
-            required: true,
-        },
-
         product:{
             type: Object,
             required: true
         },
 
-        quantity:{
-            type: Number,
+        customization:{
+            type:Object,
             required: true
-        },
-
-        payment:{
-            type: String,
-            required: true,
-            enum: ["COD", "Online"],
         },
 
         status:{
             type: String,
             default: "Pending",
             required: true,
-            enum: ["Pending", "Dispatched", "Delivered", "Cancelled"],
-        },
-
-        customization:{
-            type: Object
-        },
-
-        approvalId:{
-            type: String
+            enum: ["Pending", "Accepted", "Declined", "Cancelled", "Ordered"],
         },
 
         date:{
@@ -62,4 +43,4 @@ const orderSchema = new Schema(
     }
 );
 
-module.exports = mongoose.model("order", orderSchema);
+module.exports = mongoose.model("approval", approvalSchema);

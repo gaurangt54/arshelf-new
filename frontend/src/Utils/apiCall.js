@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from 'axios';
 
 const backendUrl1 = "http://localhost:2000";

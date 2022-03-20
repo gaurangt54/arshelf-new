@@ -54,14 +54,14 @@ function SignIn(props) {
            
             <div>
                 <Container fluid="lg">
-                    <Row style={{ height: "85vh" , padding: "1rem" }}>
-                        <Col sm={8}>
+                    <Row className="p-2">
+                        <Col sm={7}>
                             <div className="loginImage">
-                                <img src={loginImg} width="100%" height="530vh"alt="" />
+                                <img src={loginImg} width="100%" alt="" />
                             </div>
                         </Col>
 
-                        <Col sm={4}>
+                        <Col sm={5}>
                             <div style={{ padding: "60px 0 0 40px", margin: "0 auto",}}>
                                 <div className="heading" style={{ textAlign: "center" }}>
                                     <h1>LOGIN</h1>

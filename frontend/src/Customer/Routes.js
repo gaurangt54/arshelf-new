@@ -1,10 +1,10 @@
+/* eslint-disable */
 import React, {useState} from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
 import { Context } from "./Context.js";
 import apiCall from '../Utils/apiCall'; 
 
-import AR from "./AR";
 import Header from "./Header";
 import Footer from "./Footer";
 import Home from "./Home";
@@ -17,13 +17,15 @@ import Wishlist from "./Wishlist";
 import Checkout from "./Checkout";
 import Orders from "./Orders";
 import Profile from "./Profile";
+import Customizer from "./Customizer.js";
+import ARView from "./ARView.js";
+import Approvals from "./Approvals.js";
 
 function App(){
 
     const [user, setUser] = useState();
 
     const saveUser = (u) => {
-        console.log("Came to h")
         setUser(u);
         if(u)
             localStorage.setItem('user', JSON.stringify(u));
@@ -42,9 +44,11 @@ function App(){
                 <Route exact path="/register" component={SignUp} ></Route>
                 <Route exact path="/category/:id" component={Category} ></Route>
                 <Route exact path="/product/:id" component={Product} ></Route>
-                <Route exact path="/ar" component={AR} ></Route>
                 <Route exact path="/cart" component={Cart} ></Route>
+                <Route exact path="/arview/:id" component={ARView} ></Route>
+                <Route exact path="/customizer/:id" component={Customizer} ></Route>
                 <Route exact path="/checkout" component={Checkout} ></Route>
+                <Route exact path="/approvals" component={Approvals} ></Route>
                 <Route exact path="/orders" component={Orders} ></Route>
                 <Route exact path="/profile" component={Profile} ></Route>
                 <Route exact path="/wishlist" component={Wishlist} ></Route>

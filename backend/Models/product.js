@@ -49,6 +49,10 @@ const productSchema = new Schema(
         reviews:{
             type:Array,
             default:[]
+        },
+        colors:{
+            type:Array,
+            default:[]
         }
     }
 );

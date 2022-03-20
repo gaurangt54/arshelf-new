@@ -8,15 +8,15 @@ import './style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
 
-function Orders(props) {
+function Approvals(props) {
 
     const [user, saveUser] = useContext(Context);
     const [payload, setPayload] = useState({});
-    const [orders, getOrders] = useState();
+    const [approvals, getapprovals] = useState();
     const [pages, setPages] = useState();
     const [page, setPage] = useState();
     const [total, setTotal] = useState();
-    const [order, setOrder] = useState();
+    const [approval, setapproval] = useState();
 
     const setDate = (date1) => {
         var date;
@@ -38,10 +38,10 @@ function Orders(props) {
 
     useEffect(()=>{
         if(user){
-            apiCall(`getOrders`, "POST", null, {userEmail: user.email})
+            apiCall(`getCustomizationRequests`, "POST", null, {userEmail: user.email})
             .then((res) => {
                 setPayload({...payload, userEmail: user.email})
-                getOrders(res.data.orders);
+                getapprovals(res.data.approvals);
                 setPages(res.data.pages)
                 setPage(res.data.page)
                 setTotal(res.data.total)
@@ -59,9 +59,9 @@ function Orders(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getOrders`, "POST", null, payload)
+        apiCall(`getCustomizationRequests`, "POST", null, payload)
         .then((res) => {
-            getOrders(res.data.orders);
+            getapprovals(res.data.approvals);
             setPages(res.data.pages)
             setPage(res.data.page)
             setTotal(res.data.total)
@@ -72,15 +72,15 @@ function Orders(props) {
         });
     }
 
-    // Change Order Status
-    const setOrderStatus = (status) => {
-        setOrder({...order, status: status})
+    // Change approval Status
+    const setapprovalStatus = (status) => {
+        setapproval({...approval, status: status})
 
-        // Update Order
-        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
+        // Update approval
+        apiCall(`updateapproval`, 'PUT', null, {approval:approval, status:status})
         .then(res=>{
             alert(res.data.message);
-            setOrder()
+            setapproval()
             window.location.reload()
         })
         .catch(err=>{
@@ -88,61 +88,76 @@ function Orders(props) {
         })
     }
 
+    const addToCart = (approval) => {
+        
+        const p = {
+            id: approval.product._id,
+            name: approval.product.name,
+            arFile: approval.product.arFile,
+            category_id: approval.product.category_id,
+            price: approval.product.price,
+            quantity: 1,
+            customization: approval.customization,
+            approvalId: approval._id
+        }
+        
+        let cart = user.cart;
+        cart.push(p) 
+
+        apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+        .then(res=>{ 
+            saveUser({...user, cart:cart})
+            alert("Product Added to Cart")
+        })
+        .catch(err=>{ 
+            alert("Something went wrong")
+        })
+    
+    }
+
     return (
         <div>
             <Container fluid style={{backgroundColor:"#fafafa", padding:"1rem 4rem 3rem 4rem", minHeight:"88vh"}}>
                 <div className="text-center" >
-                    <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Orders</div>
-                    {order?
+                    <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Approvals</div>
+                    {approval?
                         <div className="mb-3 p-3" style={{backgroundColor:"#ffcfcf", textAlign:"center"}}>
-                                Do you want to cancel Order <u>{order.product.name}</u> ? 
-                                <button className="btn btn-danger" type="button" onClick={()=>{setOrderStatus("Cancelled")}}>Yes</button> 
-                                <button className="btn btn-primary" type="button" onClick={()=>{setOrder()}}>No</button>
+                                Do you want to cancel approval <u>{approval.product.name}</u> ? 
+                                <button className="btn btn-danger" type="button" onClick={()=>{setapprovalStatus("Cancelled")}}>Yes</button> 
+                                <button className="btn btn-primary" type="button" onClick={()=>{setapproval()}}>No</button>
                     </div>:null}
-                    {orders && orders.length!=0 ?
+                    {approvals && approvals.length!=0 ?
                     <Table striped hover responsive className="admin-tables">
                         <thead style={{backgroundColor:"#eee"}}>
                             <th className="p-3">Sr. No.</th>
                             <th className="p-3">Date</th>
                             <th className="p-3">Product Name</th>
-                            <th className="p-3">Quantity</th>
-                            <th className="p-3">Price</th>
-                            <th className="p-3">Total</th>
-                            <th className="p-3">Payment Method</th>
-                            <th className="">
-                            <div className="dropdown">
-                                <p className="dropdown-toggle hidden" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Status (All)
-                                </p>
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">All</a>
-                                  <a className="dropdown-item" href="#">Delivered</a>
-                                  <a className="dropdown-item" href="#">Dispatched</a>
-                                  <a className="dropdown-item" href="#">Pending</a>
-                                </div>
-                              </div>
-                            </th>
-                            <th className="p-3">Cancel Order</th>
+                            <th className="p-3">Status</th>
+                            <th className="p-3">Customization</th>
+                            <th className="p-3">Cancel approval</th>
                         </thead>
                         <tbody>
-                            {orders.map((order, index)=>(
+                            {approvals.map((approval, index)=>(
                                 <tr style={index%2==0?{backgroundColor:"#ddd"}:{backgroundColor:"#eee"}}>
                                     <td className="p-3">{index+1}</td>
-                                    <td className="p-3">{setDate(order.date)[0]}</td>
-                                    <td className="p-3" onClick={order.approvalId?()=>{props.history.push(`arview/${order.approvalId}`)}:null}>
-                                        {order.product.name}
-                                        {order.customization?" (CST)":null}
-                                    </td>
-                                    <td className="p-3">{order.quantity}</td>
-                                    <td className="p-3">&#8377; {order.product.price}</td>
-                                    <td className="p-3">&#8377; {order.product.price * order.quantity}</td>
-                                    <td className='p-3'>{order.payment}</td>
-                                    <td className='p-3'>{order.status}</td>
+                                    <td className="p-3">{setDate(approval.date)[0]}</td>
+                                    <td className="p-3">{approval.product.name}</td>
+                                    <td className='p-3'>{approval.status}</td>
                                     <td className=''>
-                                        {order.status!=='Cancelled' ?
-                                        <button className="btn btn-danger p-n2" onClick={()=>{setOrder(order)}}>Cancel</button>:
-                                        <button className="btn btn-dark p-n2" disabled >Cancel</button>
-
+                                        {approval.customization?
+                                        <button className="btn btn-primary p-n2" onClick={()=>{props.history.push(`arview/${approval._id}`)}}>
+                                            View
+                                        </button>
+                                        :"No Customization"
+                                        }
+                                    </td>
+                                    <td className=''>
+                                        {approval.status=='Cancelled' || approval.status=='Ordered' ?
+                                        <button className="btn btn-dark p-n2" disabled >Cancel</button>:
+                                        approval.status==='Accepted'?
+                                        <button className="btn btn-dark p-n2" onClick={()=>{addToCart(approval)}} >Add to Cart</button>
+                                        :
+                                        <button className="btn btn-danger p-n2" onClick={()=>{setapproval(approval)}}>Cancel</button>
                                         }
                                     </td>
                                 </tr>
@@ -162,7 +177,7 @@ function Orders(props) {
                     </div>
 
                     <div className=" my-2 text-center text-gray-600">
-                        Showing {(page-1)*5+1} - {page===pages.length?total.length:page*5} out of {total.length} Orders
+                        Showing {(page-1)*5+1} - {page===pages.length?total.length:page*5} out of {total.length} approvals
                     </div>
                     </> : null}
                     </Row>
@@ -172,4 +187,4 @@ function Orders(props) {
     )
 }
 
-export default Orders
+export default Approvals
