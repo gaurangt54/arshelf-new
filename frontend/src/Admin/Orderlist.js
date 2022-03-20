@@ -12,7 +12,7 @@ function Orderlist(props) {
     const [pages, setPages] = useState();
     const [page, setPage] = useState();
     const [total, setTotal] = useState();
-
+    const [payload, setPayload] = useState({});
     const [viewStatus, setViewStatus] = useState();
 
     const [order, setOrder] = useState();

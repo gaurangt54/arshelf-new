@@ -113,7 +113,7 @@ function Cart(props) {
                             </div>
                             <hr />
                             
-                            <Card.Body>
+                            <Card.Body onClick={()=>{props.history.push(`/product/${product.id}`)}}>
                                 <Card.Text className="container text-center">
                                     <strong style={{fontSize:"20px"}}>{product.name}</strong>
                                     <br />

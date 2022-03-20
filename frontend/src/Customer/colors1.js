@@ -18,11 +18,33 @@ export const colors = [
     },
 
     {
-        color: "F2DABA",
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1647791049/ArFiles/graywoven__aily98.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
     },
 
     {
-        color: "F2A97F",
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1647801557/ArFiles/red__qfnj6x.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
+
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1647801758/ArFiles/purple_wozzmv.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
+
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1647801958/ArFiles/darkbrown_kqxprl.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
+
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1647802060/ArFiles/lbr_ktxez5.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
     },
 
     {
@@ -55,5 +77,13 @@ export const colors = [
 
     {
         color: "75C8C6",
+    },
+
+    {
+        color: "000000",
+    },
+
+    {
+        color: "FFFFFF",
     },
 ];

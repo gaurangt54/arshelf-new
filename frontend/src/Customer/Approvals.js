@@ -77,7 +77,7 @@ function Approvals(props) {
         setapproval({...approval, status: status})
 
         // Update approval
-        apiCall(`updateapproval`, 'PUT', null, {approval:approval, status:status})
+        apiCall(`updateCustomizationRequest`, 'PUT', null, {approval:approval, status:status})
         .then(res=>{
             alert(res.data.message);
             setapproval()
