@@ -117,7 +117,7 @@ function Approvals(props) {
 
     return (
         <div>
-            <Container fluid style={{backgroundColor:"#fafafa", padding:"1rem 4rem 3rem 4rem", minHeight:"88vh"}}>
+            <Container fluid style={{backgroundColor:"#fafafa", padding:"1.5rem", minHeight:"88vh"}}>
                 <div className="text-center" >
                     <div className="p-4" style={{fontWeight:"bold", fontSize:"40px"}}>Approvals</div>
                     {approval?

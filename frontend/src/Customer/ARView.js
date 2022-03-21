@@ -191,12 +191,13 @@ function ARView(props) {
         <div className="row">
           <div className="col-md-12" id="obj"> </div>
 
-          <div className="col-md-12 p-5" style={{textAlign:"center" , padding:"1rem"}}>
+          <div className="col-md-12 p-3" style={{textAlign:"center" , padding:"1rem"}}>
           <Table striped hover responsive className="admin-tables">
               <thead style={{backgroundColor:"#eee"}}>
                   <th className="p-3">Sr. No.</th>
                   <th className="p-3">Mesh Name</th>
-                  <th className="p-3" colSpan={2}>Type</th>
+                  <th className="p-3">Type</th>
+                  <th className="p-3">Design</th>
               </thead>
               <tbody>
               {approval?

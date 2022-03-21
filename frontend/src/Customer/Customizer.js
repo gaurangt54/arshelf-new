@@ -311,15 +311,15 @@ function Customizer(props) {
           {arlink?
           <div className="p-2">
             <div className="row">
-              <div className="col-md-6 text-left">
+              <div className="col-6 text-left">
                 <button className="btn btn-primary" onClick={()=>{window.location.reload()}}>Customize Again</button>
               </div>
-              <div className="col-md-6 text-right">
+              <div className="col-6 text-right">
                 <button className="btn btn-dark align-right" onClick={addCustomizationRequest}>Ask for Approval</button>
               </div>
             </div>
 
-            <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={arlink} ios-src={arlink} ar alt='A 3D model of a robot' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={arlink} ios-src={arlink} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
           </div>
           :<div className="p-2">
             <div className="row mx-3 color-pallete">

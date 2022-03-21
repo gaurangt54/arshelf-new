@@ -66,7 +66,7 @@ function Home() {
 
             <Container fluid className="p-5" id="aboutus" style={{backgroundColor:"#eeeeee"}}>
             <Row>
-                <Col md={6} className="px-5"> 
+                <Col md={6} className="px-md-5 py-1"> 
                 <div className="title-container text-center" >
                     <h2>About Us</h2>
                     <hr className="hr-style" />
@@ -74,8 +74,8 @@ function Home() {
                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
                 </Col>
 
-                <Col md={6} className="px-5 text-center align-center"> 
-                <img src="https://www.ikea.com/ext/ingkadam/m/55f24c0fc725d96e/original/PH181390-crop001.jpg?f=s" height="300px" />
+                <Col md={6} className="px-md-5 py-1 text-center align-center"> 
+                <img src="https://www.ikea.com/ext/ingkadam/m/55f24c0fc725d96e/original/PH181390-crop001.jpg?f=s" height="300px" width="100%" />
                 </Col>
                 
             </Row>
@@ -102,11 +102,11 @@ function Home() {
             <Container id="contactus" fluid className="p-5" style={{backgroundColor:"#eeeeee"}}>
             <Row>
   
-                <Col md={6} className="px-5 text-center align-center"> 
-                    <img src="https://www.ikea.com/ext/ingkadam/m/55f24c0fc725d96e/original/PH181390-crop001.jpg?f=s" height="300px" />
+                <Col md={6} className="px-md-5 py-1 text-center align-center"> 
+                    <img src="https://www.ikea.com/ext/ingkadam/m/55f24c0fc725d96e/original/PH181390-crop001.jpg?f=s" height="300px" width="100%" />
                 </Col>
 
-                <Col md={6} className="px-5"> 
+                <Col md={6} className="px-md-5 py-1"> 
                 <div className="title-container text-center" >
                     <h2>Contact Us</h2>
                     <hr className="hr-style" />

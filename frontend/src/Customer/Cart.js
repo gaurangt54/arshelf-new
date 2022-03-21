@@ -98,7 +98,7 @@ function Cart(props) {
                 </div>
                 </Col>
                 <Col md={3}>
-                <button className="btn btn-secondary btn-block m-4" onClick={()=>{props.history.push('/checkout')}}>Proceed to Chekout (₹{total})</button>
+                <button className="btn btn-secondary btn-block m-4" onClick={()=>{props.history.push('/checkout')}} disabled={total===0}>Proceed to Chekout (₹{total})</button>
                 </Col>
             </Row>
             <Row>
@@ -113,9 +113,9 @@ function Cart(props) {
                             </div>
                             <hr />
                             
-                            <Card.Body onClick={()=>{props.history.push(`/product/${product.id}`)}}>
+                            <Card.Body >
                                 <Card.Text className="container text-center">
-                                    <strong style={{fontSize:"20px"}}>{product.name}</strong>
+                                    <strong style={{fontSize:"20px"}} onClick={()=>{props.history.push(`/product/${product.id}`)}}>{product.name}</strong>
                                     <br />
                                     <p className="para">{product.quantity} x ₹{product.price} = ₹{(product.quantity*product.price)}</p>
                                     <div class="btn-group">

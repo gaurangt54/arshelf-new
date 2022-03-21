@@ -23,7 +23,7 @@ function Category(props) {
         })
         .catch((err) => {
             console.log(err);
-            alert(err.data.message);
+            alert("Something went wrong");
         });
     }, []);
 
