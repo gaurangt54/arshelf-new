@@ -10,45 +10,45 @@ import apiCall from '../Utils/apiCall';
 
 import { colors } from "./colors1";
 
-// import obj2gltf from "obj2gltf";
-
 import { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
 function Customizer(props) {
     document.title = "Product Customizer"
+
+    //Initialze Camera for viewing 3D Model
     var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 60);
     camera.position.z = 5; //Farness
 
-    var loaded = false;
-    let initRotate = 0;
-    let meshD = {}
-    const [customization, setCustomization] = useState();
-
-    const [model, setModel] = useState();
-    const [arlink, setArlink] = useState();
-    const [product, setProduct] = useState();
-    const [user, saveUser] = useContext(Context);
+    var loaded = false; // Model is loaded or not
+    let initRotate = 0; // Rotating the model
+    let meshD = {} // Object storing the meshes and colors in it Eg:- {legs:"Blue", cushion:"Black"}
+    
+    const [customization, setCustomization] = useState(); // State variable to store meshD
+    const [model, setModel] = useState(); // State variable to store 3d Model
+    const [arlink, setArlink] = useState(); // Stores link of AR File that is generated after clicking 'Proceed'
+    const [product, setProduct] = useState(); // Product Details
+    const [user, saveUser] = useContext(Context); // User Details
 
     let m = [];
-    let part;
-    const [meshes, setMeshes] = useState();
+    let part; // Part Selected to customize
+    const [meshes, setMeshes] = useState(); // Array to store Meshes/Parts Name
 
-    const [initScene, setScene] = useState();
-    const scene = new THREE.Scene();
+    const [initScene, setScene] = useState(); // State Variable to store Scene
+    const scene = new THREE.Scene(); //Initialize Scene
     scene.background = new THREE.Color(0xffffff);
 
-    const material = new THREE.MeshStandardMaterial({color: 0x777777});
+    const material = new THREE.MeshStandardMaterial({color: 0x777777}); // Initial Material of product
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, 350);
+    const renderer = new THREE.WebGLRenderer({ antialias: true }); // Renderer which generates a div in which model gets loaded
+    renderer.setSize(window.innerWidth, 350); // Size of div
     renderer.shadowMap.enabled = true;
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.61);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.61); // Light for visibiltity of model in Camera
     hemiLight.position.set(0, 50, 0);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    const dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 ); // Light for visibiltity of model in Camera
     dirLight.target.position.set( 0, 0, -1 );
     dirLight.add( dirLight.target );
     dirLight.lookAt( -1,-1, 0 );
@@ -56,8 +56,10 @@ function Customizer(props) {
     scene.add( dirLight );
 
     var loader = new GLTFLoader();
-    useEffect(()=>{
 
+    // API to get Product details
+    useEffect(()=>{
+        // Id is retrieved from url
         const id = props.match.params.id;
         apiCall(`getProductById`, 'GET', id)
         .then(res=>{
@@ -68,27 +70,27 @@ function Customizer(props) {
         })
     }, [])
 
+    // Function to Load Model
     useEffect(()=>{
         if(product!==undefined && !loaded ){
-            console.log(product)
             loader.load(product.arFile, function(gltf){
             console.log("Loader", scene)
             var theModel = gltf.scene;
-            theModel.traverse(o => {
-            if (o.isMesh) {
-                m.push(o.name)
+            theModel.traverse(o => { //Going through each Mesh
+            if (o.isMesh) {  
+                m.push(o.name) // Put name of Mesh in Array of Buttons
                 let n = o.name
-                meshD[n] = {color: "777777"}
+                meshD[n] = {color: "777777"} // Defining Material in meshD
                 o.nameID = o.name; 
                 o.castShadow = true;
                 o.receiveShadow = true;
-                o.material = material;
+                o.material = material; // Assigning initial Material
               }
             });
             theModel.scale.set(1, 1, 1);
             theModel.rotation.y = Math.PI;
             theModel.position.y = 0;
-            scene.add(theModel);
+            scene.add(theModel); // Adding model to the scene
             setModel(theModel);
             setMeshes(m)
             setScene(scene);
@@ -96,7 +98,7 @@ function Customizer(props) {
             console.error(error);
         });
 
-        animate();
+        animate(); // For assigning controls and rotations of model
         }
     }, [product])
     
@@ -111,7 +113,7 @@ function Customizer(props) {
 
     function animate() {
         controls.update();
-        renderer.render(scene, camera);
+        renderer.render(scene, camera); // Render
         requestAnimationFrame(animate);
 
         if (resizeRendererToDisplaySize(renderer)) {
@@ -122,7 +124,6 @@ function Customizer(props) {
 
         if (model != null && loaded == false) {
             initialRotation();
-            //DRAG_NOTICE.classList.add('start');
         }
     }
 
@@ -150,6 +151,7 @@ function Customizer(props) {
       }
     }
  
+    // Div which was created above is placed to DIV with id 'obj'
     useEffect(() => {
         const r = renderer.domElement;
         const t = document.getElementById("obj")
@@ -166,7 +168,7 @@ function Customizer(props) {
         });}
     }, [renderer]);
 
-
+    // onClick of Proceed this function runs
     const download = () => {
         const exporter = new GLTFExporter();
         console.log("Download", initScene);
@@ -212,6 +214,7 @@ function Customizer(props) {
         let al = a[a.length-1]
     }
     
+    // Runs when we change texture or color from predefined colors in pallete
     const changeColor = (color) => {
 
       if(!part){
@@ -242,14 +245,15 @@ function Customizer(props) {
 
     model.traverse(o => {
       if(o.isMesh && o.nameID!= null){
-      if(o.name==part){
-        o.material=new_mtl
+      if(o.name==part){ // if Mesh Name matches Part Name selected
+        o.material=new_mtl // New material assigned to that mesh
       }
     }
     });
     
     }
 
+    // Runs when we click a mesh name like 'legs' , 'back'
     const setPart = (mesh) => {
       if(part){
         document.getElementById(`${part}`).style.backgroundColor = '#b3b3b3';
@@ -262,7 +266,9 @@ function Customizer(props) {
       document.getElementById(`${mesh}`).style.borderColor = '#333333';
       document.getElementById(`${mesh}`).style.color = '#ffffff';
     }
+    // All this document.getElementById is for changing CSS of buttons
    
+    // Runs when we change color from custom input 
     const cColor = (color) => {
 
       if(!part){
@@ -286,6 +292,7 @@ function Customizer(props) {
 
     }
 
+    //API to make customization request
     const addCustomizationRequest = () => {
 
       console.log("Customization", customization)
