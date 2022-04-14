@@ -1,8 +1,10 @@
-const Approval = require('../Models/approval')
-const User = require('../Models/user')
-const Product = require('../Models/product')
+const {Approval} = require('./export')
+const {regex, setDate} = require('./export')
+const { parse } = require('json2csv');
 
-exports.addCustomizationRequest = (req, res) => {
+const {mail} = require('./export')
+
+exports.addCustomizationRequest = async (req, res) => {
     const {user, product, customization} = req.body;
 
     const request = new Approval({
@@ -13,6 +15,15 @@ exports.addCustomizationRequest = (req, res) => {
         customization: customization,
         date: new Date()
     })
+
+    const to = user.email
+    const subject = `Customization Request Sent`
+    let html = ""
+    html += `Your request for customization of ${product.name} is sent to the Admins.\
+    We will revert back with your requests as soon as possible.`
+    
+    await mail(to, subject, null, html, null)
+    
 
     request.save()
     .then(response=>{
@@ -61,6 +72,16 @@ exports.getCustomizationRequests = (req,res) => {
 
 exports.updateCustomizationRequest = async (req, res) =>{
     const {approval, status} = req.body;
+
+    const to = approval.userEmail
+    const subject = `Customization Request has been ${status}`
+    let html = ""
+    html += `Your request for customization of ${approval.product.name} is ${status}. `
+
+    status === "Accepted" ? html+= "Please check your 'My Requests' Section to add the Customized Product into the Cart" : null;
+    status === "Declined" ? html+= "We are sorry for the inconvience caused." : null;
+        
+    await mail(to, subject, null, html, null)
 
     Approval.findOneAndUpdate({_id:approval._id}, {status:status})
     .then(response=>{

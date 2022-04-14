@@ -2,10 +2,19 @@ const Order = require('../Models/order')
 const User = require('../Models/user')
 const Product = require('../Models/product')
 const Approval = require('../Models/approval')
+const {mail} = require('./export')
 
 exports.createOrder = async (req,res) => {
     const {user, deliveryAddress, payment} = req.body;
     const cart = user.cart;
+
+    const subject = "Order Placed Sucessfully";
+    const to = `parekhkinjal16@gmail.com, gaurang.thakkar1997@gmail.com, ${user.email} `;
+    let html = ""
+    let total = 0;
+
+    html += "<div> <table border='1' cellpadding='4' style='border:1px solid black; border-collapse: collapse; text-align:left;'>"
+    html += " <tr> <th>Name</th>  <th>Qty</th> <th>Price</th> <th>Subtotal</th> </tr>"
 
     await cart.map(async(product)=>{
         const order = new Order({
@@ -20,6 +29,10 @@ exports.createOrder = async (req,res) => {
             payment: payment,
             date: new Date()
         })
+
+        html += `<tr> <td>${product.name}</td> <td>${product.quantity}</td> <td>${product.price}</td> <td>${product.quantity*product.price}</td> </tr>`
+
+        total += product.quantity*product.price
 
         await order.save()
         .then(response=>{
@@ -51,6 +64,13 @@ exports.createOrder = async (req,res) => {
             res.status(500)
         })
     })
+
+    html += "</table> <br>"
+    html += `<h3> Total Amount: <b> ₹ ${total} </b></h3>`
+    html += `<h4> Payment Method: <b> ${payment} </b></h4>`
+    html += "</div>"
+
+    await mail(to, subject, null, html, null)
 
     await User.findOneAndUpdate({email:user.email}, {cart:[]})
     .then(response=>{
@@ -113,6 +133,13 @@ exports.updateOrder = async (req, res) =>{
             res.status(500)
         })
     }
+
+    const to = order.userEmail
+    const subject = `Order has been ${status}`
+    let html = ""
+    html += `Your order of ${order.product.quantity} x ${order.product.name} is ${status}`
+
+    await mail(to, subject, null, html, null)
 
     Order.findOneAndUpdate({_id:order._id}, {status:status})
     .then(response=>{

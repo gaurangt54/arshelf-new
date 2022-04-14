@@ -1,5 +1,7 @@
 const Product = require('../Models/product')
 
+const axios = require('axios');
+
 const regex = (value) => {
     const p = {
         $regex: value,
@@ -124,7 +126,7 @@ exports.getProductById = (req, res) => {
 exports.getProducts = (req, res) => {
 
     const {category_id, name, length, height, breadth, quantity, eoq, price, lcost, hcost, wishlist} = req.body
-    let sorting = {1:{_id:1}, 2:{price:1}, 3:{price:-1}}
+    let sorting = {1:{name:1}, 2:{price:1}, 3:{price:-1}}
     
     let payload = {is_deleted:0}
 
@@ -136,7 +138,7 @@ exports.getProducts = (req, res) => {
     height ? payload['height'] = {$lte:height} : null;
     lcost && hcost ? payload['price'] = {$lte:hcost, $gte:lcost} : null;
 
-    const sort = req.body.sort ? sorting[req.body.sort] : {_id:1};
+    const sort = req.body.sort ? sorting[req.body.sort] : {name:1};
     console.log(req.body.sort)
 
     const page = req.body.page ? req.body.page : 1;
@@ -162,4 +164,45 @@ exports.getProducts = (req, res) => {
     .catch(error=>{
         res.status(500).json({message:"Products Not Fetched", error:error, success:false})
     })
+}
+
+exports.getRecommendedProducts = async (req, res) => {
+    const {product} = req.body;
+
+    let p = await axios({
+        url: 'https://protected-gorge-70490.herokuapp.com/recommendation',
+        method: 'POST',
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-type': 'application/json',
+        },
+        data: {product: product},
+    })
+    .then(response=>{ 
+        return response.data.result
+        //console.log(response)
+    })
+    .catch(error=>{ 
+        console.log(error)
+    })
+    
+    await Product.find({name:{$in:p}}).limit(3)
+    .then(response=>{
+        console.log(response)
+        res.status(200).json({message:"Prdouct Fetched Successfully", data:response, success:true})
+    })
+    .catch(error=>{
+        console.log(error)
+        res.status(500).json({message:"Prdouct Not Fetched", error:error, success:false})
+    })
+
+}
+
+exports.getR = (req, res) => {
+    const {product} = req.body;
+    console.log("recevied")
+    
+
+
+
 }
