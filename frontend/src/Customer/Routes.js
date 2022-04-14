@@ -20,6 +20,7 @@ import Profile from "./Profile";
 import Customizer from "./Customizer.js";
 import ARView from "./ARView.js";
 import Approvals from "./Approvals.js";
+import AllProducts from "./AllProducts.js";
 
 function App(){
 
@@ -51,6 +52,7 @@ function App(){
                 <Route exact path="/approvals" component={Approvals} ></Route>
                 <Route exact path="/orders" component={Orders} ></Route>
                 <Route exact path="/profile" component={Profile} ></Route>
+                <Route exact path="/products" component={AllProducts} ></Route>
                 <Route exact path="/wishlist" component={Wishlist} ></Route>
 
                 {!window.location.pathname.includes("/admin") ? (

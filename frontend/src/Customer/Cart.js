@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
 import {Container, Row, Col, Card, Button} from 'react-bootstrap'; 
-import apiCall from '../Utils/apiCall'; 
+import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
 
 function Cart(props) {
 
@@ -109,7 +109,7 @@ function Cart(props) {
 
                             
                             <div className="contain-card-img">
-                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                             </div>
                             <hr />
                             

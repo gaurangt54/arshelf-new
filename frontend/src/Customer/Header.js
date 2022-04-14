@@ -7,7 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Navbar, Nav, NavDropdown, Button} from 'react-bootstrap'; 
 import { faCartArrowDown, faHeart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function Header(props) {
 
@@ -20,9 +21,14 @@ function Header(props) {
         const u = JSON.parse(localStorage.getItem('user'));
         if(u)
             saveUser(u)
-        apiCall(`getCategories`, 'GET', null)
+            
+        axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             getCategories(res.data.data)
+        })
+        .catch(err=>{
+            alert("Something went wrong, please try again!");
+            console.log(err)
         })
     }, [])
 
@@ -34,8 +40,8 @@ function Header(props) {
 
     return (
         <div id="nav-section">
-            <Navbar className="navbar" expand="md" bg="dark" variant="dark" style={{"font-family":"Comfortaa"}}>
-                <Navbar.Brand className="brand" onClick={()=>{props.history.push('/')}} style={{"font-size":"24px"}}>
+            <Navbar className="navbar" expand="md" bg="dark" variant="dark" style={{"fontFamily":"Comfortaa"}}>
+                <Navbar.Brand className="brand" onClick={()=>{props.history.push('/')}} style={{"fontSize":"24px"}}>
                     ARShelf<br/>
                     <div style={{fontSize:"10px"}}>Shop Easy with AR</div>
                     
@@ -48,8 +54,9 @@ function Header(props) {
                         <Nav.Link className="px-3" href="/#aboutus">About Us</Nav.Link>
                         {categories && categories.length !==0 ?
                         <NavDropdown className="px-3" title="Products" id="basic-nav-dropdown">
+                            <NavDropdown.Item href={`/products`} >All</NavDropdown.Item>
                             {categories.map((category, index)=>(
-                                <NavDropdown.Item href={`/category/${category._id}`} >{category.name}</NavDropdown.Item>
+                                <NavDropdown.Item key={index} href={`/category/${category._id}`} >{category.name}</NavDropdown.Item>
                             ))}
                         </NavDropdown>
                         :null}
@@ -71,7 +78,7 @@ function Header(props) {
                         {!user?
                         <Button type="button" className=" mx-2" onClick={()=>{props.history.push('/login')}}>Log In</Button>
                         :
-                        <NavDropdown className="user-dropdown" style={{right:0, left:"auto"}} title={ <a href="#" className="navbar-icon mx-md-1" ><FontAwesomeIcon id="user-icon" icon={faUserCircle}/></a>} id="basic-nav-dropdown">
+                        <NavDropdown className="user-dropdown" style={{right:0, left:"auto"}} title={ <span href="#" className="navbar-icon mx-md-1" ><FontAwesomeIcon id="user-icon" icon={faUserCircle}/></span>} id="basic-nav-dropdown">
                             <NavDropdown.Item >{user.name}</NavDropdown.Item>
                             <NavDropdown.Item onClick={()=>{props.history.push('/profile')}}>My Profile</NavDropdown.Item>
                             <NavDropdown.Item onClick={()=>{props.history.push('/orders')}}>My Orders</NavDropdown.Item>
@@ -82,9 +89,6 @@ function Header(props) {
                         </div>
 
                     </div>
-                        
-                        
-                        
                     </Nav>
             </Navbar>
         </div>

@@ -4,7 +4,9 @@ import {Container, Row, Col, Card, Button} from 'react-bootstrap';
 import Countdown, { zeroPad, calcTimeDelta, formatTimeDelta } from 'react-countdown';
 
 import './style.css';
-import apiCall from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 import chair from './images/chair.glb';
 import chairUsdz from './images/chair.usdz';
@@ -19,19 +21,15 @@ function Home() {
 
     // Get Categories
     useEffect(()=>{
-        apiCall(`getCategories`, 'GET', null)
+        axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             getCategories(res.data.data)
         })
+        .catch(err=>{
+            alert("Something went wrong, please try again!");
+            console.log(err)
+        })
     }, [])
-
-    const settings = {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1
-    };
 
     const renderer = ({ hours = 11, minutes = 12, seconds = 60 }) => (
         <span>{zeroPad(hours)}h :{zeroPad(minutes)}m :{zeroPad(seconds)}s</span>

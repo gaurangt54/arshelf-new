@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import apiCall from "../Utils/apiCall";
+import apiCall, {mainBackendUrl} from "../Utils/apiCall";
 
 function Checkout(props) {
 
@@ -156,7 +156,7 @@ function Checkout(props) {
                         user.cart.map((product,index)=>(
                             <Row style={{backgroundColor:"#eee", padding:"0.5rem"}}>
                                 <Col sm={3} >
-                                <model-viewer className="viewer" style={{height:"50px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                                <model-viewer className="viewer" style={{height:"50px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                                 </Col>
                                 <Col sm={6} className="my-auto">
                                     {product.name}<br/>

@@ -24,7 +24,7 @@ body{
 
 .add-to-wishlist{
     position: absolute;
-    z-index: 1;
+    z-index: 0.5;
     top:10px;
     right:10px;
     color:#f71138;
@@ -261,5 +261,48 @@ input.choose-input-color:focus{
     text-align: center;
     background-color: #333333;
     color: white;
+    width: 300px;
     border-radius: 10px;
 }
+
+.btn-proceed:hover{
+    text-align: center;
+    background-color: #888888;
+    color: #000000;
+    width: 300px;
+    border-radius: 10px;
+    border-color: #333333;
+}
+
+.sizechart{
+    background-color: #333333;
+    padding: 1rem;
+    margin: 0 auto;
+    position: absolute;
+    z-index: 2;
+    align-items: center;
+    top:50;
+    left:50;
+}
+
+.customization-step{
+    display: inline-block;
+    padding: 1rem;
+}
+
+.customization-step-on{
+    display: inline-block;
+    font-size: 20px;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+.input-lg1-text{
+    width: 280px;
+    background-color: #cccccc;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 7px;
+}
+

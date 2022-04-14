@@ -6,7 +6,7 @@ const backendUrl = "https://api-arshelf.herokuapp.com";
 
 const apiCall = (path, method, params, body) => {
 
-    let url = `${backendUrl}/${path}/`;
+    let url = `${backendUrl1}/${path}/`;
 
     if(params!=null)
         url += `${params}`;
@@ -14,7 +14,7 @@ const apiCall = (path, method, params, body) => {
     const dataRetrieved = axios({
         url: url,
         method: method,
-        headers:{'Content-Type':'application/json'},
+        headers:{"Access-Control-Allow-Origin": "*", 'Content-Type':'application/json', },
         data: body ? body : null
     })
     .then(response=>{ return response })
@@ -24,3 +24,4 @@ const apiCall = (path, method, params, body) => {
 }
 
 export default apiCall;
+export {backendUrl1 as mainBackendUrl};

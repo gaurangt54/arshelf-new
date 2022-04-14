@@ -102,10 +102,10 @@ function Orderlist(props) {
                             <th className="p-3">Date</th>
                             <th className="p-3">Customer Name</th>
                             <th className="p-3">Product</th>
-                            <th className="p-3">Quantity</th>
+                            <th className="p-3">Qty</th>
                             <th className="p-3">Price</th>
                             <th className="p-3">Total</th>
-                            <th className="p-3">Payment Method</th>
+                            <th className="p-3">Payment</th>
                             <th className="">
                             <div className="dropdown">
                                 <p className="dropdown-toggle hidden" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -120,6 +120,7 @@ function Orderlist(props) {
                                 </div>
                               </div>
                             </th>
+                            <th className="p-3">Change Status</th>
                         </thead>
                         {orders && orders.length!=0 ?
                         <tbody>
@@ -130,13 +131,18 @@ function Orderlist(props) {
                                     <td className="p-3">{order.userName}</td>
                                     <td className="p-3" onClick={order.approvalId?()=>{props.history.push(`/admin/arview/${order.approvalId}`)}:null}>
                                         {order.product.name}
-                                        {order.customization?" (CST)":null}
+                                        {/* {order.customization?" (CST)":null} */}
                                     </td>
                                     <td className="p-3">{order.quantity}</td>
                                     <td className="p-3">&#8377; {order.product.price}</td>
                                     <td className="p-3">&#8377; {order.product.price * order.quantity}</td>
                                     <td className='p-3'>{order.payment}</td>
-                                    <td className='p-3' onClick={()=>{setOrder(order)}}>{order.status}</td>
+                                    <td className='p-3'>{order.status}</td>
+                                    <td className=''>
+                                    <button className="btn btn-secondary p-n2" onClick={()=>{setOrder(order)}}>
+                                        Change Status
+                                    </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

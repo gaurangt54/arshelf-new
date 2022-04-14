@@ -6,7 +6,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import GLTFExporter from 'three-gltf-exporter';
 
 import React from 'react'
-import apiCall from '../Utils/apiCall';
+import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
+import axios from "axios";
 
 import { colors } from "./colors1";
 
@@ -22,13 +23,17 @@ function Customizer(props) {
 
     var loaded = false; // Model is loaded or not
     let initRotate = 0; // Rotating the model
-    let meshD = {} // Object storing the meshes and colors in it Eg:- {legs:"Blue", cushion:"Black"}
-    
-    const [customization, setCustomization] = useState(); // State variable to store meshD
+    let meshcolor = {} // Object storing the meshes and colors in it Eg:- {legs:"Blue", cushion:"Black"}
+    let productSize = {}
+
+    const [customization, setCustomization] = useState(); // State variable to store meshcolor
     const [model, setModel] = useState(); // State variable to store 3d Model
     const [arlink, setArlink] = useState(); // Stores link of AR File that is generated after clicking 'Proceed'
     const [product, setProduct] = useState(); // Product Details
     const [user, saveUser] = useContext(Context); // User Details
+
+    const [step, setStep] = useState(1);
+    const [extras, getExtras] = useState();
 
     let m = [];
     let part; // Part Selected to customize
@@ -73,18 +78,19 @@ function Customizer(props) {
     // Function to Load Model
     useEffect(()=>{
         if(product!==undefined && !loaded ){
-            loader.load(product.arFile, function(gltf){
+            loader.load(`${mainBackendUrl}/download/${product.arFile}`, function(gltf){
             console.log("Loader", scene)
             var theModel = gltf.scene;
             theModel.traverse(o => { //Going through each Mesh
             if (o.isMesh) {  
                 m.push(o.name) // Put name of Mesh in Array of Buttons
-                let n = o.name
-                meshD[n] = {color: "777777"} // Defining Material in meshD
                 o.nameID = o.name; 
                 o.castShadow = true;
                 o.receiveShadow = true;
-                o.material = material; // Assigning initial Material
+                if(o.name in product.design.color){
+                  o.material = setColor(product.design.color[o.name])
+                }
+                //o.material = material; // Assigning initial Material
               }
             });
             theModel.scale.set(1, 1, 1);
@@ -159,21 +165,35 @@ function Customizer(props) {
           t.appendChild(r);
           console.log("Obj", renderer)
         }
-        if(model){
-        model.traverse(o => {
-          if (o.isMesh) {
-              let n = o.name
-              meshD[n] = {color: "777777"}
-            }
-        });}
+        if(model && !extras){
+          const l = Object.keys(product.design).length; 
+          if(l>2){
+              let e = product.design.extras
+              getExtras(e)
+          }
+          else
+              getExtras()
+
+          model.traverse(o => {
+            if (o.isMesh) {
+                let n = o.name
+                meshcolor[n] = product.design.color? product.design.color[n] : {color: "777777"}
+              }
+          });
+
+          console.log("Product Size: ",product.design.size)
+          let s = product.design.size
+          productSize = s
+      }
+
     }, [renderer]);
 
     // onClick of Proceed this function runs
     const download = () => {
         const exporter = new GLTFExporter();
         console.log("Download", initScene);
-        console.log("Dict", meshD)
-        setCustomization(meshD)
+        console.log("Dict", meshcolor)
+        setCustomization({...customization, color: meshcolor})
         exporter.parse(
           initScene,
             function (result) {
@@ -209,9 +229,21 @@ function Customizer(props) {
         link.href = URL.createObjectURL(blob);
         link.download = fileName;
         console.log(link.href)
-        setArlink(link.href)
-        const a = link.href.split("/")
-        let al = a[a.length-1]
+
+        const formData = new FormData();
+        //console.log(file)
+        formData.append("file", blob);
+        formData.append("fileName", fileName);
+        console.log(formData)
+        
+        axios.post(`${mainBackendUrl}/uploadApproval`, formData)
+        .then(res=>{
+            console.log(res)
+            const a = res.data.filename
+            setArlink(a)
+            setStep(2)
+        })
+
     }
     
     // Runs when we change texture or color from predefined colors in pallete
@@ -220,8 +252,8 @@ function Customizer(props) {
       if(!part){
         alert("Select Part")
       }
-
-      let new_mtl;
+      else{
+        let new_mtl;
       if (color.texture) {
 
         let txt = new THREE.TextureLoader().load(color.texture);
@@ -233,14 +265,14 @@ function Customizer(props) {
         new_mtl = new THREE.MeshStandardMaterial({
         map: txt });
 
-        meshD[part] = {texture: color.texture}
+        meshcolor[part] = {texture: color.texture}
 
     } else  {
         new_mtl = new THREE.MeshStandardMaterial({
         color: parseInt('0x' + color.color),
         //shininess: color.shininess ? color.shininess : 10
      })
-        meshD[part] = {color: color.color}
+        meshcolor[part] = {color: color.color}
     }
 
     model.traverse(o => {
@@ -250,7 +282,34 @@ function Customizer(props) {
       }
     }
     });
+      }
+      
     
+    }
+
+    const setColor = (color) => {
+
+
+      let new_mtl;
+      if (color.texture) {
+
+        let txt = new THREE.TextureLoader().load(color.texture);
+
+        txt.repeat.set(4, 4, 4);
+        txt.wrapS = THREE.RepeatWrapping;
+        txt.wrapT = THREE.RepeatWrapping;
+
+        new_mtl = new THREE.MeshStandardMaterial({
+        map: txt });
+
+
+    } else  {
+        new_mtl = new THREE.MeshStandardMaterial({
+        color: parseInt('0x' + color.color),
+     })
+    }
+    return new_mtl;
+
     }
 
     // Runs when we click a mesh name like 'legs' , 'back'
@@ -274,21 +333,23 @@ function Customizer(props) {
       if(!part){
         alert("Select Part")
       }
-
-      let new_mtl = new THREE.MeshStandardMaterial({
-        color: parseInt('0x' + color.substring(1)),
-        //shininess: color.shininess ? color.shininess : 10
-      })
-
-      meshD[part] = {color: color.substring(1)}
-
-      model.traverse(o => {
-        if(o.isMesh && o.nameID!= null){
-        if(o.name==part){
-          o.material=new_mtl
+      else{
+        let new_mtl = new THREE.MeshStandardMaterial({
+          color: parseInt('0x' + color.substring(1)),
+          //shininess: color.shininess ? color.shininess : 10
+        })
+  
+        meshcolor[part] = {color: color.substring(1)}
+  
+        model.traverse(o => {
+          if(o.isMesh && o.nameID!= null){
+          if(o.name==part){
+            o.material=new_mtl
+          }
         }
+        });
       }
-      });
+      
 
     }
 
@@ -313,9 +374,44 @@ function Customizer(props) {
       })
     }
 
+    const extraCustomization = () => {
+      setCustomization({...customization, size: productSize, image:arlink})
+      if(extras)
+          setStep(3)
+      else
+          setStep(4)
+    }
+
+    const changeSize = (p, value) => {
+      productSize[p] = value;
+    }
+
+    const changeExtras = (index, n) => {
+        let e = extras
+        e[index].qty = e[index].qty + n
+        getExtras(e)
+        setCustomization({...customization, extras: e})
+        console.log("New Extras", extras)
+    }
+
+    const setARView = () => {
+
+    }
+
     return (
         <div>
-          {arlink?
+          <div className="step-box text-center">
+            <div className={step===1?"customization-step-on":"customization-step"}>
+              <div>Color Customization</div>
+            </div>
+            <div className={step===2?"customization-step-on":"customization-step"}>Size Customization</div>
+            {extras?
+            <div className={step===3?"customization-step-on":"customization-step"}>Extra Customization</div>
+            :null}
+            <div className={step===4?"customization-step-on":"customization-step"}>View in AR</div>
+          </div>
+          <hr/>
+          {step===4?
           <div className="p-2">
             <div className="row">
               <div className="col-6 text-left">
@@ -326,10 +422,14 @@ function Customizer(props) {
               </div>
             </div>
 
-            <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={arlink} ios-src={arlink} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${arlink}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
           </div>
-          :<div className="p-2">
-            <div className="row mx-3 color-pallete">
+          :null
+          }
+
+          {step===1?
+          <div className="p-2 text-center">            
+            <div className="row mx-3 color-pallete justify-content-md-center">
               {colors && colors.length!==0?
               colors.map((color,index)=>(
                 <div key={index} className="choose-color" 
@@ -355,10 +455,51 @@ function Customizer(props) {
                   ))
                 :null}
                 <br/> 
-                <button className="btn btn-proceed btn-block m-2" onClick={download}>Proceed</button>
+                <button className="btn btn-proceed m-2" onClick={download}>Proceed</button>
             </div>
-            </div>
-            }
+          </div>
+          :null}
+
+          {step===2?
+          <div className="m-50 text-center">
+              <div style={{fontSize:"16px"}}>
+              Product Original Dimensions (in inches): {product.length} x {product.breadth} x {product.height}
+              </div>
+              <br/><br/>
+              <div style={{fontSize:"24px" , marginBottom:"10px"}}>Customize product size</div>
+              <div className="p-1 text-center">
+                  <h6>Enter your Dimensions (in inches)</h6>
+                  <input className="input-lg1-text" type="text" onChange={(event)=>{changeSize("length", event.target.value)}} placeholder="Length" /><br/>
+                  <input className="input-lg1-text" type="text" onChange={(event)=>{changeSize("breadth", event.target.value)}} placeholder="Breadth" /><br/>
+                  <input className="input-lg1-text" type="text" onChange={(event)=>{changeSize("height", event.target.value)}} placeholder="Height" /><br/>
+              </div>
+              
+              <button className="btn btn-proceed m-2" onClick={extraCustomization}>Proceed</button>
+          </div>
+          :null}
+
+          {step===3?
+          <div className="m-50 text-center" style={{minHeight:"53.6vh"}}>
+              <div style={{fontSize:"24px", padding:"1rem"}}>
+                Extra Customization
+              </div>
+              {extras && extras.length!==0?
+              extras.map((feature,index)=>(
+                  <div className="p-2">
+                    {index+1}. &nbsp;
+                    {feature.name}
+                    <div class="btn-group ml-3">
+                      <button type="button" class="btn btn-outline-secondary" style={{marginRight:"0px"}} disabled={feature.qty===0} onClick={()=>{changeExtras(index,-1)}} >-</button>
+                      <button type="button" class="btn btn-secondary" style={{marginRight:"0px"}}>{feature.qty}</button>
+                      <button type="button" class="btn btn-outline-secondary" disabled={feature.qty===10} onClick={()=>{changeExtras(index, 1)}} >+</button>
+                    </div>
+                  </div>
+                  
+              )):null}
+              <button className="btn btn-proceed m-2" onClick={()=>{setStep(4)}}>Proceed</button>
+          </div>
+          :null}
+
         </div>
     );
 }

@@ -2,6 +2,7 @@
   "name": "frontend1",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://protected-gorge-70490.herokuapp.com/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
@@ -28,6 +29,7 @@
     "react-dom": "^17.0.2",
     "react-grid-carousel": "^1.0.1",
     "react-minimal-pie-chart": "^8.2.0",
+    "react-modal": "^3.14.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-slick": "^0.28.1",

@@ -117,6 +117,7 @@ function CustomizationRequests(props) {
                               </div>
                             </th>
                             <th className="p-3">Customization</th>
+                            <th className="p-3">Change Status</th>
                         </thead>
                         {approvals && approvals.length!=0 ?
                         <tbody>
@@ -126,7 +127,7 @@ function CustomizationRequests(props) {
                                     <td className="p-3">{setDate(approval.date)[0]}</td>
                                     <td className="p-3">{approval.userName}</td>
                                     <td className="p-3">{approval.product.name}</td>
-                                    <td className='p-3' onClick={approval.status!="Ordered"?()=>{setapproval(approval)}:null}>{approval.status}</td>
+                                    <td className='p-3'>{approval.status}</td>
                                     <td className=''>
                                         {approval.customization?
                                         <button className="btn btn-primary p-n2" onClick={()=>{props.history.push(`arview/${approval._id}`)}}>
@@ -134,6 +135,11 @@ function CustomizationRequests(props) {
                                         </button>
                                         :"No Customization"
                                         }
+                                    </td>
+                                    <td>
+                                    <button className="btn btn-secondary p-n2" onClick={approval.status!="Ordered"?()=>{setapproval(approval)}:null}>
+                                        Change Status
+                                    </button>
                                     </td>
                                 </tr>
                             ))}

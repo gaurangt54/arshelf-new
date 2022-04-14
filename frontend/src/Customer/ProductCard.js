@@ -5,7 +5,7 @@ import {Container, Row, Col, Card, Button} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import {withRouter} from 'react-router-dom'; 
-import apiCall from '../Utils/apiCall'; 
+import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
 
 function ProductCard(props) {
 
@@ -67,7 +67,7 @@ function ProductCard(props) {
             </div>
 
             <div className="contain-card-img">
-            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
             </div>
             <hr />
             
@@ -75,7 +75,7 @@ function ProductCard(props) {
                 <Card.Text className="container">
                     <strong style={{fontSize:"20px"}}>{product.name}</strong>
                     <br />
-                    <p className="para">From ₹ {product.price}</p>
+                    <div className="para">From ₹ {product.price}</div>
                     <Button className="btn-secondary" onClick={()=>{addToCart(product, 1)}}>Add to Cart</Button>
                 </Card.Text>
             </Card.Body>
