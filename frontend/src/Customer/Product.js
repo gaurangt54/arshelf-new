@@ -4,8 +4,8 @@ import { Context } from "./Context";
 
 import {Container, Row, Col, Form, Button} from 'react-bootstrap'; 
 
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
-import axios from "axios";
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCartPlus, faArrowRight, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,6 @@ function Product(props) {
     const [newReview, setNewReview] = useState(true);
     const [viewChart, setViewChart] = useState(false);
 
-    const [rcmd, getRcmd] = useState();
     const [rcmdProducts, getRcmdProducts] = useState();
 
     const [user, saveUser] = useContext(Context);
@@ -43,7 +42,7 @@ function Product(props) {
     useEffect(()=>{
         const id = props.match.params.id;
 
-        apiCall(`getProductById`, 'GET', id)
+        axios.get(`${backendUrl}/getProductById/${id}`)
         .then(res=>{
             const p = res.data.data
             let r = 0
@@ -76,24 +75,7 @@ function Product(props) {
 
         if(product){
 
-            // const p1 = await axios({
-            //     url: 'https://protected-gorge-70490.herokuapp.com/recommendation',
-            //     method: 'POST',
-            //     headers: {
-            //         "Access-Control-Allow-Origin": "*",
-            //         'Content-type': 'application/json',
-            //     },
-            //     data: {product: product.name},
-            // })
-            // .then(response=>{ 
-            //     console.log(response)
-            //     return response.data.result
-            // })
-            // .catch(error=>{ 
-            //     console.log(error)
-            // })
-
-            await apiCall(`getRecommendedProducts`, 'POST', null, {product:product.name})
+            await axios.post(`${backendUrl}/getRecommendedProducts/`, {product:product.name})
             .then(res=>{
                 const p = res.data.data
                 getRcmdProducts(p)
@@ -121,7 +103,7 @@ function Product(props) {
             let cart = user.cart;
             cart.push(p) 
     
-            apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+            axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:cart})
             .then(res=>{ 
                 saveUser({...user, cart:cart})
                 alert("Product Added to Cart")
@@ -142,7 +124,7 @@ function Product(props) {
             let wishlist = user.wishlist;
             wishlist.push(product._id) 
     
-            apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:wishlist})
+            axios.put(`${backendUrl}/updateUser/`, {email:user.email, wishlist:wishlist})
             .then(res=>{ 
                 saveUser({...user, wishlist:wishlist})
                 alert("Product Added to Wishlist")
@@ -170,7 +152,7 @@ function Product(props) {
                 alert("Select Ratings");
             }
             else{
-                apiCall(`addReview`, 'POST', null, r)
+                axios.post(`${backendUrl}/addReview/`, r)
                 .then(res=>{ 
                     alert("Review Submitted")
                     window.location.reload()
@@ -188,7 +170,8 @@ function Product(props) {
         let r = product.reviews;
         r.splice(index, 1)
         getProduct({...product, reviews:r})
-        apiCall(`updateProduct`, 'PUT', null, {_id:product._id, reviews:r})
+
+        axios.put(`${backendUrl}/updateProduct/`, {_id:product._id, reviews:r})
         .then(res=>{
             alert("Review Deleted");
             window.location.reload();
@@ -223,7 +206,7 @@ function Product(props) {
                 <Row className="mx-3">
                     <Col md={6}>
                         <div className="threeObj text-center">
-                        <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} ar alt='A 3D model of a robot' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                        <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${product.arFile}`} ar alt='A 3D model of a robot' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                         <button className="btn btn-success" onClick={()=>{setViewChart(true)}}>Size Chart</button><br/>
                         <button className="btn btn-outline-primary" onClick={()=>{customize(product.arFile)}}>Click here to Customize<FontAwesomeIcon className='ml-1' icon={faArrowRight}/></button>
                         

@@ -1,7 +1,7 @@
 import React from 'react'
-import {Container, Row, Col, Card, Button} from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import {withRouter} from 'react-router-dom'; 
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
+import backendUrl from '../backendUrl'
 
 function RelatedProduct(props) {
 
@@ -11,7 +11,7 @@ function RelatedProduct(props) {
     return (
         <Card className="card-card" onClick={()=>{props.history.push(`/product/${product._id}`)}}>
             <div className="contain-card-img">
-            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${product.arFile}`} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
             </div>
             <hr />
             <Card.Body>

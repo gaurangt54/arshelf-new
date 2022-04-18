@@ -1,7 +1,8 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
 
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 import './style.css';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
@@ -36,7 +37,7 @@ function Orderlist(props) {
     }
 
     useEffect(()=>{
-        apiCall(`getOrders`, "POST", null, {status:viewStatus})
+        axios.post(`${backendUrl}/getOrders/`, {status:viewStatus})
         .then((res) => {
             getOrders(res.data.orders);
             setPages(res.data.pages)
@@ -54,7 +55,7 @@ function Orderlist(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getOrders`, "POST", null, payload)
+        axios.post(`${backendUrl}/getOrders/`, payload)
         .then((res) => {
             getOrders(res.data.orders);
             setPages(res.data.pages)
@@ -69,7 +70,8 @@ function Orderlist(props) {
 
     const setOrderStatus = (status) => {
         setOrder({...order, status: status})
-        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
+        
+        axios.put(`${backendUrl}/updateOrder/`, {order:order, status:status})
         .then(res=>{
             alert(res.data.message);
             setOrder()

@@ -30,6 +30,14 @@ body{
     color:#f71138;
 }
 
+.remove-from-wishlist{
+    position: absolute;
+    z-index: 1;
+    top:10px;
+    right:10px;
+    color:#f71138;
+}
+
 
 #home .home-container .text-container {
     padding: 70px 0;
@@ -306,3 +314,20 @@ input.choose-input-color:focus{
     border-radius: 7px;
 }
 
+.customization-page{
+    position: relative;
+}
+
+.loading-model{
+    position: absolute;
+    top:50;
+    left:50;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem;
+    margin: 0 auto;
+    z-index: 1;
+}

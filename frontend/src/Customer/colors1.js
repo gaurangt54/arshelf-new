@@ -47,53 +47,53 @@ export const colors = [
         shininess: 0,
     },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739136/Textures/t2_gmory9.png",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739136/Textures/t2_gmory9.png",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739043/Textures/room_cupboard_wood1_BaseColor_ba1jvh.png",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739043/Textures/room_cupboard_wood1_BaseColor_ba1jvh.png",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739045/Textures/room_cupboard_wood2_Roughness_fva4hr.png",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739045/Textures/room_cupboard_wood2_Roughness_fva4hr.png",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739135/Textures/Wood_map_mjiyd4.jpg",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739135/Textures/Wood_map_mjiyd4.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649738990/Textures/Cloth-Diffuse1_iitajz.jpg",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649738990/Textures/Cloth-Diffuse1_iitajz.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739099/Textures/MesaHappy_WoodBase_BaseColor_jitkm4.png",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739099/Textures/MesaHappy_WoodBase_BaseColor_jitkm4.png",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739077/Textures/Cupboard_Shelf_iuxkal.png",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739077/Textures/Cupboard_Shelf_iuxkal.png",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
-    // {
-    //     texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739098/Textures/linley_andrea_sofa_wood_gslv7i.jpg",
-    //     size: [3, 3, 3],
-    //     shininess: 0,
-    // },
+    {
+        texture: "https://res.cloudinary.com/gaurangt54/image/upload/v1649739098/Textures/linley_andrea_sofa_wood_gslv7i.jpg",
+        size: [3, 3, 3],
+        shininess: 0,
+    },
 
 
 ];

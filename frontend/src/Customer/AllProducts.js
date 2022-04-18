@@ -1,11 +1,13 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import apiCall from "../Utils/apiCall";
+import Modal from 'react-modal';
+
 import ProductCard from "./ProductCard";
 import './style.css';
 
-import Modal from 'react-modal';
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function AllProducts(props) {
 
@@ -31,7 +33,7 @@ function AllProducts(props) {
 
     // Gets Products 
     useEffect(()=>{
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)
@@ -50,7 +52,7 @@ function AllProducts(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)

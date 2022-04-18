@@ -3,7 +3,8 @@ import React, {useState, useEffect} from 'react'
 import { faEdit,faTrash,faTasks } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Button, Table} from 'react-bootstrap';
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function ManageProduct(props) {
 
@@ -18,7 +19,7 @@ function ManageProduct(props) {
 
     useEffect(()=>{
 
-        apiCall(`getCategories`, 'GET', null)
+        axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             const data = res.data;
             const categories = {};
@@ -35,7 +36,7 @@ function ManageProduct(props) {
     }, [])
 
     useEffect(()=>{
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)
@@ -53,7 +54,7 @@ function ManageProduct(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)
@@ -67,7 +68,7 @@ function ManageProduct(props) {
     }
 
     const deleteIt = () => {
-        apiCall(`deleteProduct`, 'DELETE', null, {id: deleteProduct._id})
+        axios.delete(`${backendUrl}/deleteProduct/`, {id: deleteProduct._id})
         .then(res=>{
             alert(res.data.message);
             setDeleteProduct()

@@ -3,7 +3,6 @@ import React, {useState} from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
 import { Context } from "./Context.js";
-import apiCall from '../Utils/apiCall'; 
 
 import Header from "./Header";
 import Footer from "./Footer";

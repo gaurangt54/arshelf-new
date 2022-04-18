@@ -3,14 +3,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
 import {Container, Row, Col, Card, Button} from 'react-bootstrap'; 
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function Cart(props) {
 
     const [user, saveUser] = useContext(Context);
     const [total, setTotal] = useState(0)
 
-    
     useEffect(()=>{
         let t = 0 //Initial Total
 
@@ -38,7 +38,7 @@ function Cart(props) {
         })
 
         // Updates Cart Array
-        apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:user.cart})
+        axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:user.cart})
             .then(res=>{ 
                 console.log(res.data)
                 saveUser({...user, cart:user.cart})
@@ -58,7 +58,7 @@ function Cart(props) {
         })
 
         // Updates Cart Array
-        apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:user.cart})
+        axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:user.cart})
             .then(res=>{ 
                 saveUser({...user, cart:user.cart})
                 alert("Product Quantity Increased")
@@ -77,7 +77,7 @@ function Cart(props) {
         })
 
         // Updates Cart Array
-        apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:user.cart})
+        axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:user.cart})
             .then(res=>{ 
                 saveUser({...user, cart:user.cart})
                 alert("Product Quantity Decreased")
@@ -109,7 +109,7 @@ function Cart(props) {
 
                             
                             <div className="contain-card-img">
-                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.customization && product.customization.image? `${backendUrl}/download/${product.customization.image}` : `${backendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                             </div>
                             <hr />
                             

@@ -1,23 +1,18 @@
 /* eslint-disable */
 
-import React from 'react'
+import React, { useState, useEffect, useContext } from "react";
+import {Table} from 'react-bootstrap';
 
-import {Container, Row, Col, Table, Button} from 'react-bootstrap';
 
-import { useState, useEffect, useContext } from "react";
-import { Context } from "./Context";
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function ARView(props) {
-     //Farness
 
     const [approval, getapproval] = useState();
-    const [user, saveUser] = useContext(Context);
-
-    
 
     useEffect(() => {
-        apiCall(`getCustomizationRequest`, "POST", null, {id: props.match.params.id})
+        axios.post(`${backendUrl}/getCustomizationRequest/`, {id: props.match.params.id})
         .then((res) => {
             getapproval(res.data.approval)
         })
@@ -33,12 +28,12 @@ function ARView(props) {
         {approval?<div className="row">
           <div className="col-md-6 text-center p-3" id="obj"> 
           <h3>Original Design</h3>
-          <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${approval.product.arFile}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+          <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${approval.product.arFile}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
 
           </div>
           <div className="col-md-6 text-center p-3" id="obj"> 
           <h3>Required Design</h3>
-          <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${approval.customization.image}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+          <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${approval.customization.image}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
 
           </div>
           <hr/>

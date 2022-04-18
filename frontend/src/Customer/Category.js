@@ -1,11 +1,12 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import apiCall from "../Utils/apiCall";
+import { Container, Row, Col } from "react-bootstrap";
+import Modal from 'react-modal';
 import ProductCard from "./ProductCard";
 import './style.css';
 
-import Modal from 'react-modal';
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function Category(props) {
 
@@ -33,7 +34,7 @@ function Category(props) {
 
     // Gets CategoryId from URL and makes an API call for getting details of Category
     useEffect(() => {
-        apiCall(`getCategoryById`, "GET", id)
+        axios.get(`${backendUrl}/getCategoryById/${id}`)
         .then((res) => {
             getCategory(res.data.data);
         })
@@ -45,7 +46,7 @@ function Category(props) {
 
     // Gets Products of Category ID mentioned in URL
     useEffect(()=>{
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)
@@ -64,7 +65,7 @@ function Category(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getProducts`, "POST", null, payload)
+        axios.post(`${backendUrl}/getProducts/`, payload)
         .then((res) => {
             getProducts(res.data.products);
             setPages(res.data.pages)

@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
-
 import {Container, Row, Col, Card, Button} from 'react-bootstrap'; 
-import apiCall from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function Wishlist(props) {
 
@@ -13,7 +14,7 @@ function Wishlist(props) {
     useEffect(()=>{
         if(user)
         {
-            apiCall(`getProducts`, "POST", null, {wishlist: user.wishlist})
+            axios.post(`${backendUrl}/getProducts/`, {wishlist: user.wishlist})
             .then((res) => {
                 setWishlist(res.data.total);
                 console.log(wishlist)
@@ -42,6 +43,8 @@ function Wishlist(props) {
                 }               
             })
 
+            setWishlist(user.wishlist)
+
             const p = {
                 id: product._id,
                 name: product.name,
@@ -53,7 +56,7 @@ function Wishlist(props) {
             let cart = user.cart;
             cart.push(p) 
     
-            apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+            axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:cart})
             .then(res=>{ 
                 console.log(res.data)
                 saveUser({...user, cart:cart})
@@ -67,23 +70,21 @@ function Wishlist(props) {
     }
 
     const removeFromWishlist = (product) => {
-        console.log("Click")
-
         user.wishlist.map((cartItem, index)=>{
             if(cartItem.id===product.id){
                 user.wishlist.splice(index,1);
             }               
         })
 
-        apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:user.wishlist})
-            .then(res=>{ 
-                console.log(res.data)
-                saveUser({...user, wishlist:user.wishlist})
-                alert("Product Removed from Wishlist")
-            })
-            .catch(err=>{ 
-                alert("Something went wrong")
-            })
+        axios.put(`${backendUrl}/updateUser/`, {email:user.email, wishlist:wishlist})
+        .then(res=>{ 
+            console.log(res.data)
+            saveUser({...user, wishlist:user.wishlist})
+            alert("Product Removed from Wishlist")
+        })
+        .catch(err=>{ 
+            alert("Something went wrong")
+        })
     }
 
     return <div>
@@ -104,12 +105,12 @@ function Wishlist(props) {
                         <Col xl={3} lg={4} md={6}>
                         <Card className="card-card product-card">
 
-                        <div className='add-to-wishlist' onClick={()=>{removeFromWishlist(product)}}>                        
+                        <div className='remove-from-wishlist' onClick={()=>{removeFromWishlist(product)}}>                        
                             <a href="#" className="my-3 mx-2" >x</a>
                         </div>
 
                             <div className="contain-card-img">
-                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={product.arFile} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                             </div>
                             <hr />
                             
@@ -124,7 +125,7 @@ function Wishlist(props) {
                         </Card>
                         </Col>
                     ))
-                :null}
+                :<p className="m-50">Empty</p>}
             </Row>
         </Container>
     </div>;

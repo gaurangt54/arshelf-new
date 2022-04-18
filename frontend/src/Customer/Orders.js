@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 import './style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
 
 function Orders(props) {
@@ -38,7 +38,7 @@ function Orders(props) {
 
     useEffect(()=>{
         if(user){
-            apiCall(`getOrders`, "POST", null, {userEmail: user.email})
+            axios.post(`${backendUrl}/getOrders/`, {userEmail: user.email})
             .then((res) => {
                 setPayload({...payload, userEmail: user.email})
                 getOrders(res.data.orders);
@@ -59,7 +59,7 @@ function Orders(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getOrders`, "POST", null, payload)
+        axios.post(`${backendUrl}/getOrders/`, {userEmail: user.email})
         .then((res) => {
             getOrders(res.data.orders);
             setPages(res.data.pages)
@@ -77,7 +77,7 @@ function Orders(props) {
         setOrder({...order, status: status})
 
         // Update Order
-        apiCall(`updateOrder`, 'PUT', null, {order:order, status:status})
+        axios.put(`${backendUrl}/updateOrder/`, {order:order, status:status})
         .then(res=>{
             alert(res.data.message);
             setOrder()

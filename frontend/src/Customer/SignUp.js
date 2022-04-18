@@ -1,10 +1,11 @@
 /* eslint-disable */
 import React, { useState }  from 'react'
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Container, Row, Col, Form, Button,} from "react-bootstrap";
 import loginImg from "./images/signup.jpg";
-import apiCall from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'  
 
 function SignUp(props) {
 
@@ -14,11 +15,10 @@ function SignUp(props) {
 		event.preventDefault()
 		if(user.confirmPassword === user.password){
 			
-			apiCall(`signup`, 'POST', null, user).then( (res)=> {
+			axios.post(`${backendUrl}/signup/`, user).then( (res)=> {
 				alert(res.data.message);
-
 				console.log("About to Redirect!");
-				props.history.push("/"); 
+				props.history.push("/login"); 
 
 			})
 			.catch((err)=>{
@@ -31,7 +31,6 @@ function SignUp(props) {
 			alert("Please enter correct credentials!");
 		}
 
-		
 	}
 
     return (

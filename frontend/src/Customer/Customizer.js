@@ -6,8 +6,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import GLTFExporter from 'three-gltf-exporter';
 
 import React from 'react'
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
-import axios from "axios";
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 import { colors } from "./colors1";
 
@@ -29,6 +29,7 @@ function Customizer(props) {
     const [customization, setCustomization] = useState(); // State variable to store meshcolor
     const [model, setModel] = useState(); // State variable to store 3d Model
     const [arlink, setArlink] = useState(); // Stores link of AR File that is generated after clicking 'Proceed'
+    const [arShow, setARShow] = useState();
     const [product, setProduct] = useState(); // Product Details
     const [user, saveUser] = useContext(Context); // User Details
 
@@ -66,7 +67,7 @@ function Customizer(props) {
     useEffect(()=>{
         // Id is retrieved from url
         const id = props.match.params.id;
-        apiCall(`getProductById`, 'GET', id)
+        axios.get(`${backendUrl}/getProductById/${id}`)
         .then(res=>{
             setProduct(res.data.data)
         }).catch(err => {
@@ -78,7 +79,7 @@ function Customizer(props) {
     // Function to Load Model
     useEffect(()=>{
         if(product!==undefined && !loaded ){
-            loader.load(`${mainBackendUrl}/download/${product.arFile}`, function(gltf){
+            loader.load(`${backendUrl}/download/${product.arFile}`, function(gltf){
             console.log("Loader", scene)
             var theModel = gltf.scene;
             theModel.traverse(o => { //Going through each Mesh
@@ -166,14 +167,7 @@ function Customizer(props) {
           console.log("Obj", renderer)
         }
         if(model && !extras){
-          const l = Object.keys(product.design).length; 
-          if(l>2){
-              let e = product.design.extras
-              getExtras(e)
-          }
-          else
-              getExtras()
-
+        
           model.traverse(o => {
             if (o.isMesh) {
                 let n = o.name
@@ -184,6 +178,14 @@ function Customizer(props) {
           console.log("Product Size: ",product.design.size)
           let s = product.design.size
           productSize = s
+
+          const l = Object.keys(product.design).length; 
+          if(l>2){
+              let e = product.design.extras
+              getExtras(e)
+          }
+          else
+              getExtras()
       }
 
     }, [renderer]);
@@ -229,6 +231,7 @@ function Customizer(props) {
         link.href = URL.createObjectURL(blob);
         link.download = fileName;
         console.log(link.href)
+        setARShow(link.href)
 
         const formData = new FormData();
         //console.log(file)
@@ -236,14 +239,14 @@ function Customizer(props) {
         formData.append("fileName", fileName);
         console.log(formData)
         
-        axios.post(`${mainBackendUrl}/uploadApproval`, formData)
+        axios.post(`${backendUrl}/uploadApproval`, formData)
         .then(res=>{
             console.log(res)
             const a = res.data.filename
             setArlink(a)
-            setStep(2)
+            
         })
-
+        setStep(2)
     }
     
     // Runs when we change texture or color from predefined colors in pallete
@@ -355,15 +358,18 @@ function Customizer(props) {
 
     //API to make customization request
     const addCustomizationRequest = () => {
+      //setCustomization({...customization, image: arlink})
+      let cc = customization;
+      cc['image'] = arlink
+      console.log("Customization", cc)
 
-      console.log("Customization", customization)
       const request = {
           user:user,
           product: product,
-          customization: customization
+          customization: cc
       }
 
-      apiCall(`addCustomizationRequest`, 'POST', null, request)
+      axios.post(`${backendUrl}/addCustomizationRequest/`, request)
       .then(res=>{ 
           console.log(res.data)
           alert(res.data.message)
@@ -375,7 +381,7 @@ function Customizer(props) {
     }
 
     const extraCustomization = () => {
-      setCustomization({...customization, size: productSize, image:arlink})
+      setCustomization({...customization, size: productSize})
       if(extras)
           setStep(3)
       else
@@ -394,16 +400,15 @@ function Customizer(props) {
         console.log("New Extras", extras)
     }
 
-    const setARView = () => {
-
-    }
-
     return (
-        <div>
+        <div className="customization-page">
+
+          {!model?
+            <div className="loading-model">Retrieving Model...</div>
+          :null}
+
           <div className="step-box text-center">
-            <div className={step===1?"customization-step-on":"customization-step"}>
-              <div>Color Customization</div>
-            </div>
+            <div className={step===1?"customization-step-on":"customization-step"}>Color Customization</div>
             <div className={step===2?"customization-step-on":"customization-step"}>Size Customization</div>
             {extras?
             <div className={step===3?"customization-step-on":"customization-step"}>Extra Customization</div>
@@ -411,19 +416,22 @@ function Customizer(props) {
             <div className={step===4?"customization-step-on":"customization-step"}>View in AR</div>
           </div>
           <hr/>
-          {step===4?
-          <div className="p-2">
-            <div className="row">
-              <div className="col-6 text-left">
-                <button className="btn btn-primary" onClick={()=>{window.location.reload()}}>Customize Again</button>
-              </div>
-              <div className="col-6 text-right">
-                <button className="btn btn-dark align-right" onClick={addCustomizationRequest}>Ask for Approval</button>
-              </div>
-            </div>
 
-            <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${arlink}`} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
-          </div>
+          {step===4?
+            arlink?
+            <div className="p-2">
+              <div className="row">
+                <div className="col-6 text-left">
+                  <button className="btn btn-primary" onClick={()=>{window.location.reload()}}>Customize Again</button>
+                </div>
+                <div className="col-6 text-right">
+                  <button className="btn btn-dark align-right" onClick={addCustomizationRequest}>Ask for Approval</button>
+                </div>
+              </div>
+
+              <model-viewer style={{height:"500px",width:"100%",backgroundColor:"#17171A!important"}} src={arShow} ar alt='A 3D model of a furniture' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            </div>
+            :<p>Loading Model...</p>
           :null
           }
 

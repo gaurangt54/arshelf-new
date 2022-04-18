@@ -1,9 +1,9 @@
 /* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
-
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import apiCall from "../Utils/apiCall";
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function Profile() {
     
@@ -16,8 +16,9 @@ function Profile() {
         e.preventDefault();
         if(newPassword !== confirmPassword)
             alert("New Password & Confirm Password doesn't match")
+            
         else{
-            apiCall(`changePassword`, 'POST', null, {email: user.email, oldPassword:oldPassword, newPassword:newPassword})
+            axios.post(`${backendUrl}/changePassword/`, {email: user.email, oldPassword:oldPassword, newPassword:newPassword})
             .then(res=>{ 
                 alert(res.data.message)
             })

@@ -4,7 +4,8 @@ import React, {useState, useEffect} from 'react'
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 import {storage} from '../firebase'
 
@@ -15,7 +16,7 @@ function AddProduct() {
 
     useEffect(()=>{
 
-        apiCall(`getCategories`, 'GET', null)
+        axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             const data = res.data;
             const categories = [];
@@ -35,7 +36,8 @@ function AddProduct() {
 
     const submit = async (e) => {  
         e.preventDefault();   
-        apiCall(`addProduct`, 'POST', null, product)
+        
+        axios.post(`${backendUrl}/addProduct/`, product)
         .then(res=>{
             alert(res.data.message);
         })

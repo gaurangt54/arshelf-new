@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
-
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import apiCall, {mainBackendUrl} from "../Utils/apiCall";
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function Checkout(props) {
 
@@ -39,17 +40,17 @@ function Checkout(props) {
         }
 
         // API Call to Create Order
-        apiCall(`createOrder`, 'POST', null, order)
-            .then(res=>{ 
-                console.log(res.data)
-                saveUser({...user, cart:[]})
-                setLoading(false)
-                alert(res.data.message)
-                props.history.push('/orders')
-            })
-            .catch(err=>{ 
-                alert("Something went wrong")
-            })
+        axios.post(`${backendUrl}/createOrder/`, order)
+        .then(res=>{ 
+            console.log(res.data)
+            saveUser({...user, cart:[]})
+            setLoading(false)
+            alert(res.data.message)
+            props.history.push('/orders')
+        })
+        .catch(err=>{ 
+            alert("Something went wrong")
+        })
         
     }
 
@@ -63,13 +64,13 @@ function Checkout(props) {
             try{
                 setLoading(true)
                 const a = (totalCost + (totalQuantity * 250)) * 100
-                const result = await apiCall(`makePayment`, 'POST', null, {amount: a})
+                const result = await axios.post(`${backendUrl}/makePayment/`, {amount: a});
 
                 const { amount, id: order_id, currency } = result.data;
 
                 const {
                     data: { key: razorpayKey },
-                } = await apiCall(`getRazorpayKey`, 'GET', null)
+                } = await axios.get(`${backendUrl}/getRazorpayKey/`);
 
                 const order = {
                     user:user,
@@ -85,7 +86,7 @@ function Checkout(props) {
                     description: 'ARShelf Order',
                     order_id: order_id,
                     handler: async function (response) {
-                      await apiCall(`createOrder`, 'POST', null, order)
+                      await axios.post(`${backendUrl}/createOrder/`, order)
                       .then(res=>{ 
                           console.log(res.data)
                           saveUser({...user, cart:[]})
@@ -156,7 +157,7 @@ function Checkout(props) {
                         user.cart.map((product,index)=>(
                             <Row style={{backgroundColor:"#eee", padding:"0.5rem"}}>
                                 <Col sm={3} >
-                                <model-viewer className="viewer" style={{height:"50px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+                                <model-viewer className="viewer" style={{height:"50px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${product.arFile}`} alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
                                 </Col>
                                 <Col sm={6} className="my-auto">
                                     {product.name}<br/>

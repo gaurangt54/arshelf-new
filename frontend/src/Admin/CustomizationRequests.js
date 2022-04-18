@@ -1,7 +1,8 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
 
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 import './style.css';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
@@ -36,7 +37,7 @@ function CustomizationRequests(props) {
     }
 
     useEffect(()=>{
-        apiCall(`getCustomizationRequests`, "POST", null, {status:viewStatus})
+        axios.post(`${backendUrl}/getCustomizationRequests/`, {status:viewStatus})
         .then((res) => {
             getapprovals(res.data.approvals);
             setPages(res.data.pages)
@@ -54,7 +55,7 @@ function CustomizationRequests(props) {
         p['page'] = page;
         setPayload(p)
 
-        apiCall(`getCustomizationRequests`, "POST", null, payload)
+        axios.post(`${backendUrl}/getCustomizationRequests/`, payload)
         .then((res) => {
             getapprovals(res.data.approvals);
             setPages(res.data.pages)
@@ -69,7 +70,8 @@ function CustomizationRequests(props) {
 
     const setapprovalStatus = (status) => {
         setapproval({...approval, status: status})
-        apiCall(`updateCustomizationRequest`, 'PUT', null, {approval:approval, status:status})
+        
+        axios.put(`${backendUrl}/updateCustomizationRequest/`, {approval:approval, status:status})
         .then(res=>{
             alert(res.data.message);
             setapproval()

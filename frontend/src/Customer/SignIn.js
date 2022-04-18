@@ -1,11 +1,12 @@
 /* eslint-disable */
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Container, Row, Col, Form, Button} from "react-bootstrap";
 import loginImg from "./images/login.jpg";
-import apiCall from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'  
 
 function SignIn(props) {
     const [user, saveUser] = useContext(Context);
@@ -21,7 +22,8 @@ function SignIn(props) {
             email: email,
             password: pass,
         };
-        apiCall(`login`, 'POST', null, request)
+
+        axios.post(`${backendUrl}/login/`, request)
             .then((res) => {
                 if (res.data.success) {
                     alert(res.data.message);
@@ -51,7 +53,6 @@ function SignIn(props) {
 
     return (
         <>
-           
             <div>
                 <Container fluid="lg">
                     <Row className="p-2">

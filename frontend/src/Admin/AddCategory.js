@@ -2,7 +2,8 @@ import React, {useState} from 'react'
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function AddCategory(props) {
 
@@ -11,7 +12,7 @@ function AddCategory(props) {
     const submit = (e) => {
         e.preventDefault();
 
-        apiCall(`addCategory`, 'POST', null, category)
+        axios.put(`${backendUrl}/addCategory/`, category)
         .then(res=>{
             alert(res.data.message);
             props.history.push('/admin/manageCategory')

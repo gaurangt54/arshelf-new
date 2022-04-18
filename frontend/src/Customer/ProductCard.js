@@ -5,7 +5,9 @@ import {Container, Row, Col, Card, Button} from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import {withRouter} from 'react-router-dom'; 
-import apiCall, {mainBackendUrl} from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function ProductCard(props) {
 
@@ -28,7 +30,7 @@ function ProductCard(props) {
             let cart = user.cart;
             cart.push(p) 
     
-            apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+            axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:cart})
             .then(res=>{ 
                 saveUser({...user, cart:cart})
                 alert("Product Added to Cart")
@@ -48,7 +50,7 @@ function ProductCard(props) {
             let wishlist = user.wishlist;
             wishlist.push(product._id) 
     
-            apiCall(`updateUser`, 'PUT', null, {email:user.email, wishlist:wishlist})
+            axios.put(`${backendUrl}/updateUser/`, {email:user.email, wishlist:wishlist})
             .then(res=>{ 
                 saveUser({...user, wishlist:wishlist})
                 alert("Product Added to Wishlist")
@@ -67,7 +69,7 @@ function ProductCard(props) {
             </div>
 
             <div className="contain-card-img">
-            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${mainBackendUrl}/download/${product.arFile}`} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
+            <model-viewer className="viewer" style={{height:"250px",width:"100%",backgroundColor:"#17171A!important"}} src={`${backendUrl}/download/${product.arFile}`} ar alt='A 3D model of a chair' camera-orbit="-90deg" auto-rotate='' camera-controls='' background-color='#455A64'></model-viewer>
             </div>
             <hr />
             

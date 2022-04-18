@@ -4,7 +4,9 @@ import React, {useState, useEffect} from 'react'
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import apiCall from '../Utils/apiCall'; 
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function UpdateProduct(props) {
 
@@ -14,7 +16,7 @@ function UpdateProduct(props) {
 
     useEffect(()=>{
 
-        apiCall(`getProductById`, 'GET', id)
+        axios.get(`${backendUrl}/getProductById/${id}`)
         .then(res=>{
             setProduct(res.data.data)
         }).catch(err => {
@@ -22,7 +24,7 @@ function UpdateProduct(props) {
             alert("Something went wrong, please try again!");
         });
 
-        apiCall(`getCategories`, 'GET', null)
+        axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             const data = res.data;
             const categories = [];
@@ -43,7 +45,8 @@ function UpdateProduct(props) {
     const submit = async (e) => {  
         e.preventDefault(); 
         console.log(product)
-        apiCall(`updateProduct`, 'PUT', null, product)
+        
+        axios.put(`${backendUrl}/updateProduct/`, product)
         .then(res=>{
             alert(res.data.message);
             props.history.push('/admin/manageProduct')

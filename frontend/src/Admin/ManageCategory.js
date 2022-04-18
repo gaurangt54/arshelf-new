@@ -3,7 +3,8 @@ import React, {useState, useEffect} from 'react'
 import { faEdit,faTrash,faTasks } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Container,Row,Col,Button, Table} from 'react-bootstrap';
-import apiCall from '../Utils/apiCall'; 
+import axios from 'axios'; 
+import backendUrl from '../backendUrl'
 
 function ManageCategory(props) {
 
@@ -14,7 +15,7 @@ function ManageCategory(props) {
 
     useEffect(()=>{
 
-        apiCall(`getCategories`, 'GET', null)
+      axios.get(`${backendUrl}/getCategories/`)
         .then(res=>{
             const data = res.data;
             const categories = [];
@@ -38,7 +39,7 @@ function ManageCategory(props) {
 
     const update = () => {
         const newCategory = {id: updateCategory.id, image: categoryImage}
-        apiCall(`updateCategory`, 'PUT', null, newCategory)
+        axios.put(`${backendUrl}/updateCategory/`, newCategory)
         .then(res=>{
             alert(res.data.message);
             setUpdateCategory()
@@ -50,7 +51,7 @@ function ManageCategory(props) {
     } 
 
     const deleteIt = () => {
-        apiCall(`deleteCategory`, 'DELETE', null, {id: deleteCategory.id})
+        axios.delete(`${backendUrl}/deleteCategory/`, {id: deleteCategory.id})
         .then(res=>{
             alert(res.data.message);
             setDeleteCategory()

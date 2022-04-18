@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "./Context";
 
-import apiCall from '../Utils/apiCall'; 
-
-import './style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Container, Row, Col, Table, Button} from 'react-bootstrap';
+import './style.css';
+
+import axios from 'axios'; 
+import backendUrl from '../backendUrl' 
 
 function Approvals(props) {
 
@@ -38,7 +38,7 @@ function Approvals(props) {
 
     useEffect(()=>{
         if(user){
-            apiCall(`getCustomizationRequests`, "POST", null, {userEmail: user.email})
+            axios.post(`${backendUrl}/getCustomizationRequests/`, {userEmail: user.email})
             .then((res) => {
                 setPayload({...payload, userEmail: user.email})
                 getapprovals(res.data.approvals);
@@ -58,8 +58,8 @@ function Approvals(props) {
         let p = payload;
         p['page'] = page;
         setPayload(p)
-
-        apiCall(`getCustomizationRequests`, "POST", null, payload)
+        
+        axios.post(`${backendUrl}/getCustomizationRequests/`, {userEmail: user.email})
         .then((res) => {
             getapprovals(res.data.approvals);
             setPages(res.data.pages)
@@ -77,7 +77,8 @@ function Approvals(props) {
         setapproval({...approval, status: status})
 
         // Update approval
-        apiCall(`updateCustomizationRequest`, 'PUT', null, {approval:approval, status:status})
+        
+        axios.put(`${backendUrl}/updateCustomizationRequest/`, {approval:approval, status:status})
         .then(res=>{
             alert(res.data.message);
             setapproval()
@@ -104,7 +105,7 @@ function Approvals(props) {
         let cart = user.cart;
         cart.push(p) 
 
-        apiCall(`updateUser`, 'PUT', null, {email:user.email, cart:cart})
+        axios.put(`${backendUrl}/updateUser/`, {email:user.email, cart:cart})
         .then(res=>{ 
             saveUser({...user, cart:cart})
             alert("Product Added to Cart")
